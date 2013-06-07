@@ -114,6 +114,10 @@ TEMPLATE_DIRS = (
      os.path.join(RUTA_PROYECTO,'../public/templates/'),
 )
 
+#perfil del usuario 
+AUTH_PROFILE_MODULE = 'apps.usuarios.models.perfil.Perfil'
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
