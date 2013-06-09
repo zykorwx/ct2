@@ -19,9 +19,9 @@ class Cupon(models.Model):
 	tipo_user_tarjeta = models.CharField(max_length=2,choices=tipo_tarjeta,
 						default='pr')
 	class Meta:
-		verbose_name = _('Cupon')
-		verbose_name_plural = _('Cupones')
+		verbose_name = _('Solicitar un Cupon')
+		verbose_name_plural = _('Solicitar Cupones')
 		app_label= 'cupones'
 	def __unicode__(self):
-		pass
+		return '%s' %(self.num_folio)
 	

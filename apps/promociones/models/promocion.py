@@ -2,7 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from apps.empresas.models.empresa import Empresa
-
+import os
 from django.utils.translation import ugettext_lazy as _
 
 # Se usa para usarlo en un combo
@@ -15,7 +15,7 @@ tipo_promocion_choices = [('des','Descuento'),('pxt','Producto extra')]
 
 
 def get_image_path(promocion, filename):
-	return os.path.join('imagenes/empresas/emp_'+str(promocion.id_empresa), 'promociones', filename)
+	return os.path.join('imagenes/empresas/emp_'+str(promocion.empresa), 'promociones', filename)
 
 
 #Modelo para crear las categorias a las que van a pertenecer las proociones
@@ -37,8 +37,8 @@ class Sub_categoria(models.Model):
 	Categoria = models.ForeignKey(Categoria)
 	nombre =models.CharField(max_length=30, verbose_name=_('Sub Categoria'))
 	class Meta:
-		verbose_name = _('Categoria')
-		verbose_name_plural = _('Categorias')
+		verbose_name = _('Sub Categoria')
+		verbose_name_plural = _('Sub Categorias')
 		app_label = 'promociones'
 	def __unicode__(self):
 		return '%s' %(self.nombre)
@@ -47,6 +47,7 @@ class Sub_categoria(models.Model):
 
 class Promocion(models.Model):
 	empresa = models.ForeignKey(Empresa)
+	categoria = models.ManyToManyField(Sub_categoria)
 	fecha_creacion = models.DateTimeField(auto_now=True)
 	fecha_publicacion = models.DateField(blank=True, null=True, 
 						verbose_name=_('Fecha de publicacion'))
@@ -57,7 +58,7 @@ class Promocion(models.Model):
 	imagen = models.ImageField(upload_to=get_image_path, 
 						verbose_name='Imagen promocion')
 	
-	titulo_promocion = models.CharField(max_length=1,verbose_name=_('Titulo'))
+	titulo_promocion = models.CharField(max_length=30,verbose_name=_('Titulo'))
 	descripcion = models.TextField(verbose_name=_('Descripcion'))
 	precio_total =  models.DecimalField(max_digits=6, decimal_places=2, 
 						verbose_name=_(u'Precio'))
@@ -87,8 +88,8 @@ class Especificaciones_promocion(models.Model):
 						verbose_name=(u'Premier'))
 
 	class Meta:
-		verbose_name = _('Especificacion_promocion')
-		verbose_name_plural = _('Especificacion_promociones')
+		verbose_name = _('Caracteristicas de la promocion')
+		verbose_name_plural = _('Caracteristicas de las promociones')
 		app_label='promociones'
 	def __unicode__(self):
 		return '%s' %(self.tipo_promocion)

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title> {% block title %} titulo base en el block {% endblock %} </title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <link rel="stylesheet" href='{{STATIC_URL}}css/normalize.css'>
+        <link rel="stylesheet" href='{{STATIC_URL}}css/main.css'>
+        <script src='{{STATIC_URL}}js/vendor/modernizr-2.6.2.min.js'></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe"><a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+ 
+        
+        
+        <!-- Parte para el primer contenedor que es el head-->
+        
+        {% block cabecera %}
+        	<div class="headBody" > 
+        	 {% block contenedorPrincipalHead %}
+        		<div class="sectionConted" >
+        			
+        			{% block logotipoHead %} 
+        			
+        			{% endblock logotipoHead %}
+        			
+        			{% block menuRightHead %} 
+        			
+        			{% endblock menuRightHead %}
+        			
+        		</div>
+        	{% endblock contenedorPrincipalHead %}
+        	</div>
+        {% endblock cabecera %}	
+
+
+
+		<!-- Segunda parte para el contenedor secundario es el cuerpo principal -->
+		{% block contenedorCuerpo %}
+        	<div class="contedBody">   
+        		{% block contenedorPrincipalCuerpo %}
+        		<div class="sectionConted" >
+                 <!-- Contenedor padre de lo que es todo el cuerpo-->
+        			{% block banerIzCuerpo %}
+        			
+        			{% endblock banerIzCuerpo %}
+        			
+        			{% block banerDerCuerpo %}
+        			
+					{% endblock banerDerCuerpo %}
+        			
+					
+        		</div>
+        		{% endblock contenedorPrincipalCuerpo %}
+        	</div>
+        	{% endblock contenedorCuerpo %}
+        	
+        	<!-- Tercer parte, es para el pie de pagina-->
+        	{% block pieDePagina %}
+        	<footer class="footerBody">
+        		{% block contenedorPieDePagina %} 
+        		<div class="sectionConted">
+        			{% block datosPiePagina %}
+        			  
+        			{% endblock datosPiePagina %}
+        		</div>
+        		{% endblock contenedorPieDePagina %}
+        	</footer>
+        	{% endblock pieDePagina %}
+      
+        
+        
+        
+        
+        
+		
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}js/vendor/jquery-1.9.0.min.js"><\/script>')</script>
+        <script src='{{STATIC_URL}}js/plugins.js'></script>
+        <script src='{{STATIC_URL}}js/main.js'></script>
+
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <!--
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+        -->
+    </body>
+</html>

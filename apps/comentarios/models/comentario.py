@@ -29,8 +29,8 @@ class Calificacion_comentario(models.Model):
 						verbose_name=(u'Calificacion'))
 
 	class Meta:
-		verbose_name = _('Calificacion_comentario')
-		verbose_name_plural = _('Calificacion_comentarios')
+		verbose_name = _('Calificar comentario')
+		verbose_name_plural = _('Ingresar calificacion de comentarios')
 		app_label= 'comentarios'
 	def __unicode__(self):
 		return '%s' %(self.calificacion)

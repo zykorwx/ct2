@@ -67,7 +67,7 @@ class Empresa(models.Model):
 				verbose_name=_('Sitio web'))
 	municipio = models.ForeignKey('Municipio')
 	colonia = models.CharField(max_length=70, verbose_name=_('Colonia'))
-	direccion  = models.CharField(max_length=90, verbose_name=_('Dirección'))
+	direccion  = models.CharField(max_length=90, verbose_name=_('Direccion'))
 	num_exterior = models.CharField(max_length=8,
 				verbose_name=_('Numero exterior'))
 	num_interior = models.CharField(max_length=8,blank=True, 
