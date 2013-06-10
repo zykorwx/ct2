@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+ 
+<html lang="es">
+ 
+<head>
+<title>Creacion del detalle de cada cupon</title>
+<meta charset="utf-8" />
+
+</head>
+ 
+<body>
+    <header>
+       <h1>Detalle de promocion</h1>
+
+    </header>
+
+
+    <section style="background-color:#e3e2e2;width:500px;">
+    	<div class="detalle" style="background-color:#e3e2e2;width:500px;">
+
+			<h2 style="background-color:#cfcdcd;width:250px;float:left;">
+				{{ promocion.titulo_promocion }}</h2>
+				 <h4  style="background-color:#cfcdcd;width:245px;float:left">
+				termina{{ promocion.fecha_termino }}</h4>
+				<br>
+			<br>aca va la foto<br>
+			Descripcion: <h3>{{ promocion.descripcion }}</h3>
+			
+			Precio original <h3> {{ promocion.precio_total }}</h3>
+
+
+    	</div>
+    	{%if cup %}
+    	<div>
+    		No se ha cabdeado el formulario 
+    		
+    	</div>
+    	{% else %}
+		ya se canjeo el cupon por lo tanto se crea el formulario para comentar
+    	<form method="post"> {% csrf_token %}
+    			{{ formulario }}
+    			<input type="submit" name="aceptar" value="Guardar" style="width:150px;">
+    		</form>
+    	
+    	{% endif %}
+    	<br>
+		Comentarios de la promocion:
+		{% for comen in comentarios %}
+       <article  style="background-color:#cac8c8;width:500px;">
+           <h3>{{ comen.titulo }}</h3>
+          	<h4 >{{ comen.comentario }}</h4>
+			<h5 >
+          		autor   {{ comen.usuario.get_full_name }}
+          	</h5>
+          	
+          	
+       </article>
+       <div  style="background-color:#747171;width:500px;height:5px;"></div>
+       {% endfor %}
+   </div>
+    </section>
+
+
+
+    
+    <footer>
+        pie de pagina Viewor inc 
+    </footer>
+</body>
+</html>

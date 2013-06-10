@@ -12,6 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 class Comentario_promocion(models.Model):
 	usuario = models.ForeignKey(User)
 	promocion = models.ForeignKey(Promocion)
+	titulo =  models.CharField(max_length=20,verbose_name=_('Resumen'),
+				default='')
 	comentario = models.TextField(verbose_name=_('Comentario'))
 	fecha = models.DateTimeField(auto_now=True)
 	class Meta:
