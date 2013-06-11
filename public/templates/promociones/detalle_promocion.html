@@ -33,15 +33,15 @@
     	</div>
     	{%if cup %}
     	<div>
-    		No se ha cabdeado el formulario 
-    		
+    		{{ com_1 }}
+    		{{ com_2 }}
     	</div>
     	{% else %}
 		ya se canjeo el cupon por lo tanto se crea el formulario para comentar
     	<form method="post"> {% csrf_token %}
     			{{ formulario }}
     			<input type="submit" name="aceptar" value="Guardar" style="width:150px;">
-    		</form>
+    	</form>
     	
     	{% endif %}
     	<br>

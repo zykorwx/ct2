@@ -20,7 +20,10 @@ def MostrarPromocionCompleta(request, dni_promo = 1 ):
 	promocion = ""
 	cupones_usuario =""
 	formulario_comentario = ""
-	formlarioGuardado = False
+	mostrarFormularioComen = False
+	ya_comente = True
+	mensaje_1=""
+	mensaje=""
 
 	try:
 		promocion_detalle = Promocion.objects.get(pk=dni_promo)
@@ -28,8 +31,11 @@ def MostrarPromocionCompleta(request, dni_promo = 1 ):
 									promocion = promocion_detalle)
 		cupones_usuario = Cupon.objects.get(
 									pk=dni_promo,usuario=request.user.id)
-		print "realizo todas las consultas "
-		if cupones_usuario.canjeado == False:
+		for comen in comentarios_promocion:
+			if comen.usuario.id == request.user.id:
+				ya_comente = False
+		print "realizo todas las consultas linea  "
+		if cupones_usuario.canjeado == True and ya_comente:
 			if request.method == 'POST':
 				print "entro en el metodo post "
 				formulario_comentario = ComentarPromocionForm(request.POST)
@@ -51,16 +57,31 @@ def MostrarPromocionCompleta(request, dni_promo = 1 ):
 					aux.promocion =  Promocion.objects.get(pk=2)
 					#revisar que pasa si la promocion no existe
 					aux.save()
-					promo_canjeada = Cupon.objects.filter(pk=2,usuario=us).update(canjeado=True)
+					""" La siguiente linea se tiene que eliminar,
+					no va en esta vista, va en la vista de la empresa pero 
+					ahorita la necesitaba para hacer pruebas """
+					promo_canjeada = Cupon.objects.filter(pk=2,
+									usuario=us).update(canjeado=True)
 					if promo_canjeada:
 						print "si se guardo la promo canjeada"
 					
 					
-					formlarioGuardado = True
-			if formlarioGuardado == False:
+					mostrarFormularioComen = True
+			if mostrarFormularioComen == False:
 				formulario_comentario = ComentarPromocionForm()
 		else: 
-			formlarioGuardado = True
+			print "realizo todas las consultas linea  "
+			if cupones_usuario.canjeado == False:
+				print "realizo todas las consultas linea  "
+				mensaje_1 = "Para poder comentar debes cambiar tu cupon"
+			else:
+				print "realizo todas las consultas linea  77"
+				if ya_comente == False:
+					mostrarFormularioComen = True
+				else:
+					print "realizo todas las consultas linea  81"
+					mensaje = "Ya se realizo tu comentario, solo \
+								pueden comentario 1 vez "
 
 		#Cambiar el numero 3 por request.user.id 
 		print cupones_usuario
@@ -68,9 +89,10 @@ def MostrarPromocionCompleta(request, dni_promo = 1 ):
 		print promocion
 		print request.user.id
 	except Exception, e:
-		mensaje = "no existe la promocion"
+		mensaje = "Ocurrio un error inesperado"
 	finally:
 		ctx = {'promocion':promocion_detalle,'formulario':formulario_comentario,
-				'comentarios':comentarios_promocion,'cup':formlarioGuardado}
+				'comentarios':comentarios_promocion,'cup':mostrarFormularioComen
+				,'com_1':mensaje,'com_2':mensaje_1}
 		return render_to_response('promociones/detalle_promocion.html',
 				ctx,context_instance=RequestContext(request))
