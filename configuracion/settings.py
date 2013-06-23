@@ -126,6 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'social_auth',
     'south',
     'apps.usuarios',
     'apps.empresas',
@@ -165,3 +166,29 @@ LOGGING = {
         },
     }
 }
+
+
+AUTHENTICATION_BACKENDS = (
+    'social_auth.backends.twitter.TwitterBackend',
+    'social_auth.backends.facebook.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+TWITTER_CONSUMER_KEY         = 'BRdqcpPEe5C9NZZ7ZEZ05Q'
+TWITTER_CONSUMER_SECRET      = 'eGrPixqmidtZpLCzNdUB96zVht8xrRLoiNLnJ2aZsbQ'
+FACEBOOK_APP_ID              = '188980267933208'
+FACEBOOK_API_SECRET          = '5bc9b759bf791f7eb213e49d2d4ab28d'
+
+
+LOGIN_URL          = '/login-form/'
+LOGIN_REDIRECT_URL = '/usuario/logeado'
+LOGIN_ERROR_URL    = '/login-error/'
+
+SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
+SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+
+FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'es_LA'}
+
+TWITTER_EXTRA_DATA = [('profile_image_url', 'profile_image_url')]

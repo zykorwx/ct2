@@ -1,0 +1,34 @@
+{% extends 'base/usuarios/base.html' %}
+{% block tittle %}Logeado {% endblock %}
+
+{% block contenido %} 
+<div class"pure-g-r" id="layout">
+	<div class="sidebar pure-u">
+		<header class="header pure-u-1">
+			<div class="photo-box">
+				{% if user.social_auth.provider == "facebook" %}
+					<img src='https://graph.facebook.com/{{ user.username }}/picture?type=large'>
+				{% else %}
+					<img src='{{ imagen }}'>
+				{% endif %}
+			</div>
+			<h1 class="brand-title">{{ user.first_name }}</h1>				
+			<a class="pure-button pure-button-primary" href='/usuario/cerrarSesion'>Cerrar sesion</a>
+			
+		</header>
+	</div>
+</div>
+{% endblock %} 
+
+
+
+
+
+
+
+
+
+
+
+
+

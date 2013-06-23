@@ -1,20 +1,12 @@
-#encoding:utf-8
 from django.conf.urls import patterns, url, include
-from django.conf import settings
-from django.contrib import admin
-admin.autodiscover()
-# Uncomment the next two lines to enable the admin:
-
 
 urlpatterns = patterns('',
+	 url(r'', include('social_auth.urls')),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'usuarios/login.html'}),
+    url(r'^cerrarSesion/$', 'usuarios.views.cerrarSesion'),
+	url(r'^registroEmpresa/$', 'usuarios.views.nuevaEmpresaView'), # agregar nueva empresa
+	url(r'^registroUsuario/$', 'usuarios.views.nuevoConsumidorView'), # agregar nuevo usuario
     # Examples:
-    # url(r'^$', 'ct2.views.home', name='home'),
-    # url(r'^ct2/', include('ct2.foo.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^$', 'usuarios.views.index', name='home'),
+    url(r'^logeado/$', 'usuarios.views.logeado', name='Logeado'),
 )
-
-
-# Esta linea hace que en modo produccion o trabajando con el wsgi funcionen
-# los static files
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-urlpatterns += staticfiles_urlpatterns()
