@@ -1,4 +1,4 @@
-{% extends 'base/usuarios/base.html' %}
+{% extends 'usuarios/base/base.html' %}
 {% block tittle %}Logeado {% endblock %}
 
 {% block contenido %} 
@@ -6,10 +6,11 @@
 	<div class="sidebar pure-u">
 		<header class="header pure-u-1">
 			<div class="photo-box">
-				{% if user.social_auth.provider == "facebook" %}
+				{% if user.social_auth.provider == 'facebook' %}
 					<img src='https://graph.facebook.com/{{ user.username }}/picture?type=large'>
 				{% else %}
 					<img src='{{ imagen }}'>
+					{{ user.usds }}
 				{% endif %}
 			</div>
 			<h1 class="brand-title">{{ user.first_name }}</h1>				

@@ -14,7 +14,7 @@ def  index(request):
 	return render_to_response('usuarios/index.html',  context_instance=RequestContext(request))
 
 # Este metodo solo una prueba para mostrar al usuario conectado y descargar su imagen de twitter
-@login_required(login_url='/usuarios')
+@login_required(login_url='/usuario')
 def  logeado(request):
 	# Las 3 siguientes lineas son importantes por que sin ellas no se mostraria la imagen de twitter
 	if request.user.social_auth.filter(provider='twitter').count() > 0:
@@ -24,15 +24,15 @@ def  logeado(request):
 
 
 # Cerrar sesion abierta (cualquiera)
-@login_required(login_url='/usuarios')
+@login_required(login_url='/usuario')
 def cerrarSesion(request):
 	logout(request)
-	return HttpResponseRedirect('/usuarios')
+	return HttpResponseRedirect('/usuario')
 
 # Logeo por medio de email de cualquier tipo de usuario (Empresas, Consumidores que no se hayan registrado usando redes sociales)
 def login(request):
 	if request.user.is_authenticated():
-		return redirect('/usuarios')
+		return redirect('/usuario')
 	else:
 		email = request.POST['email']
 		password = request.POST['password']
@@ -40,7 +40,7 @@ def login(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				return redirect('/usuarios')
+				return redirect('/usuario')
 			else:
 				return render_to_response('usuarios/login.html', \
 					context_instance=RequestContext(request))

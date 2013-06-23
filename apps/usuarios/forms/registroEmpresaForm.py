@@ -36,5 +36,5 @@ class RegistroEmpresaForm(forms.Form):
     def clean(self,*args, **kwargs):
         self.cleaned_data.get('email')
         self.clean_password()
-        return super(SignupForm, self).clean(*args, **kwargs)
+        return super(RegistroEmpresaForm, self).clean(*args, **kwargs)
 

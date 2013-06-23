@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext 
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
-from usuarios.forms import RegistroConsumidorForm
+from apps.usuarios.forms import RegistroConsumidorForm
 
 
 
@@ -26,7 +26,7 @@ def nuevoConsumidorView(request):
 				new_user.first_name=formulario.cleaned_data['first_name']
 				new_user.last_name=formulario.cleaned_data['last_name']
 				new_user.save()
-				return HttpResponseRedirect('/usuarios')
+				return HttpResponseRedirect('/usuario')
 		else:
 			mensaje ="Los datos no son validos"
 			formulario =RegistroConsumidorForm()
