@@ -15,8 +15,6 @@ def get_image_path(perfil, filename):
 
 class Perfil(models.Model):
 	user = models.ForeignKey(User, unique=True)
-	dni_twitter = models.CharField(max_length=50, blank=True)
-	dni_facebook = models.CharField(max_length=50, blank=True)
 	avatar = models.ImageField(upload_to=get_image_path, verbose_name='avatar')
 	tipo_user_tarjera = models.CharField(max_length=2,choices=tipo_tarjeta,
 						default='pr')
