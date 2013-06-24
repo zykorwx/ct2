@@ -6,6 +6,8 @@ from django.template import RequestContext
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from apps.usuarios.forms import RegistroConsumidorForm
+# Este es un helper creado en la vista de esta aplicacion
+from views import verficaGrupo
 
 
 
@@ -26,6 +28,7 @@ def nuevoConsumidorView(request):
 				new_user.first_name=formulario.cleaned_data['first_name']
 				new_user.last_name=formulario.cleaned_data['last_name']
 				new_user.save()
+				verficaGrupo(new_user, 'consumidor')
 				return HttpResponseRedirect('/usuario')
 		else:
 			mensaje ="Los datos no son validos"
@@ -33,3 +36,4 @@ def nuevoConsumidorView(request):
 			# tipo: Se envia para conocer a quien se registra y se pueda personalizar el template registro.html
 		return render_to_response('usuarios/registro.html',{'formulario': formulario, 'tipo':'Usuario' }, \
 				context_instance=RequestContext(request))
+

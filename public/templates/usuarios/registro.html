@@ -1,6 +1,6 @@
-{% extends 'usuarios/base/base.html' %}
+{% extends 'template_base.html' %}
 {% block tittle %}Registrar {{ tipo }}{% endblock %}
-{% block contenido %}
+{% block contenedorPrincipalCuerpo %}
 			<form id='formulario' method='post' enctype='multipart/form-data' action=''>{% csrf_token %}
 				{{formulario.as_p}}
 			<p><button class="btn">Registrar</button></p>

@@ -6,6 +6,8 @@ from django.template import RequestContext
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from apps.usuarios.forms import RegistroEmpresaForm
+# Este es un helper creado en la vista de esta aplicacion
+from views import verficaGrupo
 
 
 # Este es para registrar una nueva empresa
@@ -25,6 +27,7 @@ def nuevaEmpresaView(request):
 				new_user.first_name=formulario.cleaned_data['first_name']
 				new_user.last_name=formulario.cleaned_data['last_name']
 				new_user.save()
+				verficaGrupo(new_user, 'empresa')
 				return HttpResponseRedirect('/usuario')
 		else:
 			mensaje ="Los datos no son validos"

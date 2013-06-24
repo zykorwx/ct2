@@ -1,19 +1,18 @@
-{% extends 'usuarios/base/base.html' %}
+{% extends 'template_base.html' %}
 {% block tittle %}Inicio de sesión {% endblock %}
-{% block contenido %}
+{% block contenedorPrincipalCuerpo %}
 
 
 		{% if user.is_authenticated %}
 			<p>Hola, {{ user.username }}. Si deseas cerrar tu sesion has clic <a href="/usuario/logout">aqui</a></p>
 		{% else %}
 			{% if form.errors %}
-				<div class="alert alert-info">
-  					<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div>
   					<strong>Informacion incorrecta. </strong> El nombre de usuario o contraseña son incorrectos.
 				</div>
 			{% endif %}
 
-			<form class="span4 offset3" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+			<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 			{% csrf_token %}
 			<table>
 			<tr>
@@ -26,7 +25,7 @@
 			</tr>
 			<tr>
 				<td><input type="hidden" name="next" value="{{ next }}" /></td>
-				<td><input class="btn btn-large pull-right" type="submit" value="login" /></td>
+				<td><input class="btn" type="submit" value="login" /></td>
 			</tr>
 			</table>
 

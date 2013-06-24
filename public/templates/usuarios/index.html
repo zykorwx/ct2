@@ -1,26 +1,21 @@
-{% extends 'usuarios/base/base.html' %}
+{% extends 'template_base.html' %}
 {% block tittle %}Inicio de sesión {% endblock %}
 
-{% block contenido %}
-<div class"pure-g-r" id="layout">
-	<div class="sidebar pure-u">
-		<header class="header pure-u-1">
-			<h1 class="brand-title">Inicio sesion</h1>				
-			<a class="pure-button" href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
-			<a class="pure-button" href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
-		</header>
-		<div class="u-1-3">
-			            <form class="navbar-form pull-right" method="post" action="/usuario/login/">{% csrf_token %}
+{% block contenedorPrincipalCuerpo %}
+
+			<h1>Inicio sesion</h1>				
+			<a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
+			<a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
+			<a href='/usuario/registroEmpresa'>Nueva empresa</a>
+			<a href='/usuario/registroUsuario'>Nuevo Usuario</a>
+
+			            <form method="post" action="/usuario/login/">{% csrf_token %}
                         	{{ formulario.non_field_errors }}
 							{{ formulario.username.errors }}
-                            <input class="span2" id="id_username" name="username" type="text" placeholder="Nombre de usuario">
+                            <input id="id_username" name="username" type="text" placeholder="Nombre de usuario">
                             {{ formulario.password.errors }}
-                            <input class="span2" id="id_password" name="password" type="password" placeholder="Contraseña">
+                            <input id="id_password" name="password" type="password" placeholder="Contraseña">
                             <button type="submit" class="btn">Iniciar sesión</button>
                         </form>
-
-		</div>
-	</div>
-</div>
 
 {% endblock %} 
