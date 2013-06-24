@@ -1,4 +1,8 @@
+#encoding:utf-8
 # Django settings for ct2 project.
+# Dependencias
+# south
+# django-social-auth
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
