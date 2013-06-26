@@ -1,0 +1,28 @@
+{% extends 'template_base.html' %}
+{% block tittle %}Logeado {% endblock %}
+
+{% block contenedorPrincipalCuerpo %}
+
+				{% if imagen %}
+					<img src='{{ imagen }}'>
+				{% endif %}
+
+			<h1>{{ user.first_name }}</h1>	
+
+				<h1>Eres: {{ user.groups.all.0 }}</h1>
+			<a  href='/usuario/cerrarSesion'>Cerrar sesion</a>
+
+{% endblock %} 
+
+
+
+
+
+
+
+
+
+
+
+
+

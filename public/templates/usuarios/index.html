@@ -1,0 +1,21 @@
+{% extends 'template_base.html' %}
+{% block tittle %}Inicio de sesión {% endblock %}
+
+{% block contenedorPrincipalCuerpo %}
+
+			<h1>Inicio sesion</h1>				
+			<a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
+			<a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
+			<a href='/usuario/registroEmpresa'>Nueva empresa</a>
+			<a href='/usuario/registroUsuario'>Nuevo Usuario</a>
+
+			            <form method="post" action="/usuario/login/">{% csrf_token %}
+                        	{{ formulario.non_field_errors }}
+							{{ formulario.username.errors }}
+                            <input id="id_username" name="username" type="text" placeholder="Nombre de usuario">
+                            {{ formulario.password.errors }}
+                            <input id="id_password" name="password" type="password" placeholder="Contraseña">
+                            <button type="submit" class="btn">Iniciar sesión</button>
+                        </form>
+
+{% endblock %} 

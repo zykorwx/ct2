@@ -12,11 +12,14 @@ urlpatterns = patterns('',
     # url(r'^ct2/', include('ct2.foo.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
-
     #Urls para las calificaciones
     url(r'^promo/detalle/(?P<dni_promo>\d+)$', 
     	'apps.promociones.views.mostrar_promo.MostrarPromocionCompleta',
     	name='detalle_promocion'),
+    
+    url(r'', include('social_auth.urls')),
+    url(r'^usuario/', include('apps.usuarios.urls.urls')),
+
 )
 
 
