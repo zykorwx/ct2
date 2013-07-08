@@ -16,6 +16,18 @@ from apps.cupones.models.cupon import Cupon
 from apps.comentarios.forms.comentarios import ComentarPromocionForm
 
 
+""" Librerias que no si se utilizan """
+
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
+"""
+@login_required(login_url='/usuario')
+def mostrarPromocionesInicio(request):
+"""
+	
+
+
 def MostrarPromocionCompleta(request, dni_promo = 1 ):
 	promocion = ""
 	cupones_usuario =""

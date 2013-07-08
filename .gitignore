@@ -27,4 +27,5 @@ Thumbs.db
 /log/*.log
 /tmp
 /public/upload/imagenes/*
+/public/static/admin/*
 

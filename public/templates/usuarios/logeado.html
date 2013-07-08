@@ -1,18 +1,24 @@
-{% extends 'template_base.html' %}
+{% extends 'usuarios/index.html' %}
 {% block tittle %}Logeado {% endblock %}
 
-{% block contenedorPrincipalCuerpo %}
+<!--Esta primer parte es para la cabecera de la pagina -->
 
-				{% if imagen %}
-					<img src='{{ imagen }}'>
-				{% endif %}
+{% block foto_perfil %}
+	{% if imagen %}
+		<img src='{{ imagen }}' style="height:100%;">
+	{% endif %}
+{% endblock foto_perfil %}
 
-			<h1>{{ user.first_name }}</h1>	
+{% block nom_user %}
+	<h1>{{ user.get_full_name }}</h1>
+{% endblock nom_user %}
 
-				<h1>Eres: {{ user.groups.all.0 }}</h1>
-			<a  href='/usuario/cerrarSesion'>Cerrar sesion</a>
+{% block form_logueos %}
+	<h4>Eres: {{ user.groups.all.0 }}</h4>
+	<a  href='/usuario/cerrarSesion'>Cerrar sesion</a>
+{% endblock form_logueos %}
 
-{% endblock %} 
+<!--Termina parte para la cabecera de la pagina -->
 
 
 

@@ -59,7 +59,7 @@ class Empresa(models.Model):
 	nombre = models.CharField(unique=True, max_length=50, 
 				verbose_name=_('Nombre de la empresa'))
 	giro = models.CharField(max_length=3,choices=choices_giro,
-			 	verbose_name=_('Giro de la empresa'))
+				verbose_name=_('Giro de la empresa'))
 	telefono = models.CharField(max_length=15, blank=True)
 	email = models.EmailField(null=True, blank=True, 
 				verbose_name=_('Correo electronico'))
@@ -73,8 +73,10 @@ class Empresa(models.Model):
 	num_interior = models.CharField(max_length=8,blank=True, 
 					verbose_name=_('Numero interior'))
 	encargado = models.ForeignKey(User)
+	fecha_alta = models.DateTimeField(auto_now=True,default='2013-07-07 17:27:17')
 	latitud_mapa = models.FloatField(null=True,blank=True)
 	longitud_mapa = models.FloatField(null=True,blank=True)
+	is_active = models.BooleanField(default=True) 
 	class Meta:
 		app_label = 'empresas'
 		verbose_name = _('Empresa')
@@ -82,4 +84,30 @@ class Empresa(models.Model):
 
 	def __unicode__(self):
 		return '%s' %(self.nombre)
-	
+
+
+CONCEPTOS = (
+	('1', _('Inscripcion')),
+	('0', _('Mensualidad')),
+)
+FORMASPAGO = (
+	('1', _('Contado')),
+	('0', _('Credito')),
+)
+
+class pagoEmpresa(models.Model):
+	empresa = models.ForeignKey(Empresa)
+	cantidad = models.DecimalField(max_digits=6, decimal_places=2,default=0.0,
+									verbose_name=_(u'Monto a pagar $'))
+	fecha_pago = models.DateTimeField(auto_now=True)
+	concepto = models.CharField(max_length=1, choices=CONCEPTOS, 
+								verbose_name=_('Concepto de pago'), default='1')
+	formaPago = models.CharField(max_length=1, choices=FORMASPAGO, 
+								verbose_name=_('Forma de pago'), default='0')
+
+	def __unicode__(self):
+		return u'Empresa: %s - Fecha de pago: %s' % (self.empresa, 
+														self.fecha_pago)
+
+	class Meta:
+		app_label = 'empresa'

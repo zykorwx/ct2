@@ -1,13 +1,36 @@
 {% extends 'template_base.html' %}
 {% block tittle %}Inicio de sesión {% endblock %}
 
-{% block contenedorPrincipalCuerpo %}
 
-			<h1>Inicio sesion</h1>				
-			<a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
-			<a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
-			<a href='/usuario/registroEmpresa'>Nueva empresa</a>
-			<a href='/usuario/registroUsuario'>Nuevo Usuario</a>
+
+
+ {% block cabecera %}
+        	<div class="headBody" > 
+        	 {% block contenedorPrincipalHead %}
+        		<div class="sectionConted" >
+        			
+        			{% block logotipoHead %} 
+                        <div style="width:20%;height:100%; background-color:blue;float:left;">
+                            {% block foto_perfil %}
+
+                            {% endblock foto_perfil %}
+                        </div>
+                        <div style="width:30%;height:100%; background-color:#d4d3d3;float:left;">
+                           <h2>
+                           	{% block nom_user %}
+
+                           	{% endblock nom_user %}
+                           	
+                           </h2>
+                        </div>
+        			   <div style="width:50%;height:100%;  background-color:#f5b7b7;float:left;">
+        			   	{% block form_logueos %}
+
+                          Inicio sesion	<br>			
+							<a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
+							<a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
+							<a href='/usuario/registroEmpresa'>Nueva empresa</a>
+							<a href='/usuario/registroUsuario'>Nuevo Usuario</a>
 
 			            <form method="post" action="/usuario/login/">{% csrf_token %}
                         	{{ formulario.non_field_errors }}
@@ -17,5 +40,17 @@
                             <input id="id_password" name="password" type="password" placeholder="Contraseña">
                             <button type="submit" class="btn">Iniciar sesión</button>
                         </form>
+                        {% endblock form_logueos %}
+                        </div>
+        			{% endblock logotipoHead %}
+        			
+        			{% block menuRightHead %} 
+        			
+        			{% endblock menuRightHead %}
+        			
+        		</div>
+        	{% endblock contenedorPrincipalHead %}
+        	</div>
+        {% endblock cabecera %}	
 
-{% endblock %} 
+

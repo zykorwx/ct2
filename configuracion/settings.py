@@ -75,11 +75,12 @@ STATIC_ROOT = ''
 # Example: "http://example.com/static/", "http://static.example.com/"
 STATIC_URL = '/static/'
 
-
+ADMIN_MEDIA_PREFIX = '/static/admin/'
 # Additional locations of static files
 STATICFILES_DIRS = (
      os.path.join(RUTA_PROYECTO,'../public/static/'),
 )
+
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -180,8 +181,8 @@ AUTHENTICATION_BACKENDS = (
 
 TWITTER_CONSUMER_KEY         = 'BRdqcpPEe5C9NZZ7ZEZ05Q'
 TWITTER_CONSUMER_SECRET      = 'eGrPixqmidtZpLCzNdUB96zVht8xrRLoiNLnJ2aZsbQ'
-FACEBOOK_APP_ID              = '188980267933208'
-FACEBOOK_API_SECRET          = '5bc9b759bf791f7eb213e49d2d4ab28d'
+FACEBOOK_APP_ID              = '307699549304561'
+FACEBOOK_API_SECRET          = 'f0a95f865b97fc8490eab5c299119682'
 
 # Las siguietes 3 lineas sirven para configurar el despues del login, la url de login, y el error
 LOGIN_URL          = '/login-form/'
