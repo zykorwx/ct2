@@ -2,9 +2,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 from django.utils.translation import ugettext_lazy as _
 #from django_localflavor_mx.models import MXStateField, MXZipCodeField, 
 # MXCURPField
+
+
 
 choices_giro = [('ali','Alimentos'),('dep','Deportes'),('sal','Salud')]
 
@@ -53,14 +56,14 @@ class Municipio(models.Model):
 	def __unicode__(self):
 		return '%s' %(self.nombre)
 	
-
+### Falta agregar el campo para logo de la empresa 
 class Empresa(models.Model):
 
 	nombre = models.CharField(unique=True, max_length=50, 
 				verbose_name=_('Nombre de la empresa'))
-	giro = models.CharField(max_length=3,choices=choices_giro,
-				verbose_name=_('Giro de la empresa'))
+	giro = models.ForeignKey('Categoria')
 	telefono = models.CharField(max_length=15, blank=True)
+	rfc = models.CharField(max_length=15, blank=True)
 	email = models.EmailField(null=True, blank=True, 
 				verbose_name=_('Correo electronico'))
 	sitio_web = models.URLField(null=True,blank=True,
@@ -73,10 +76,12 @@ class Empresa(models.Model):
 	num_interior = models.CharField(max_length=8,blank=True, 
 					verbose_name=_('Numero interior'))
 	encargado = models.ForeignKey(User)
-	fecha_alta = models.DateTimeField(auto_now=True,default='2013-07-07 17:27:17')
+	fecha_alta = models.DateTimeField(auto_now=True)
 	latitud_mapa = models.FloatField(null=True,blank=True)
 	longitud_mapa = models.FloatField(null=True,blank=True)
 	is_active = models.BooleanField(default=True) 
+	total_capital =  models.DecimalField(max_digits=7, decimal_places=2,
+											default=0.0)
 	class Meta:
 		app_label = 'empresas'
 		verbose_name = _('Empresa')
@@ -86,28 +91,32 @@ class Empresa(models.Model):
 		return '%s' %(self.nombre)
 
 
-CONCEPTOS = (
-	('1', _('Inscripcion')),
-	('0', _('Mensualidad')),
-)
-FORMASPAGO = (
-	('1', _('Contado')),
-	('0', _('Credito')),
-)
 
-class pagoEmpresa(models.Model):
-	empresa = models.ForeignKey(Empresa)
-	cantidad = models.DecimalField(max_digits=6, decimal_places=2,default=0.0,
-									verbose_name=_(u'Monto a pagar $'))
-	fecha_pago = models.DateTimeField(auto_now=True)
-	concepto = models.CharField(max_length=1, choices=CONCEPTOS, 
-								verbose_name=_('Concepto de pago'), default='1')
-	formaPago = models.CharField(max_length=1, choices=FORMASPAGO, 
-								verbose_name=_('Forma de pago'), default='0')
-
-	def __unicode__(self):
-		return u'Empresa: %s - Fecha de pago: %s' % (self.empresa, 
-														self.fecha_pago)
-
+#Modelo para crear las categorias a las que van a pertenecer las proociones
+class Categoria(models.Model):
+	nombre =models.CharField(max_length=30, verbose_name=_('Categoria'))
 	class Meta:
-		app_label = 'empresa'
+		verbose_name = _('Categoria')
+		verbose_name_plural = _('Categorias')
+		app_label = 'empresas'
+	def __unicode__(self):
+		return '%s' %(self.nombre)
+
+
+
+#Cada categoria puede tener varias subcategorias 
+# para que las busquedas sean especificas
+class Sub_categoria(models.Model):
+	Categoria = models.ForeignKey(Categoria)
+	nombre =models.CharField(max_length=30, verbose_name=_('Sub Categoria'))
+	class Meta:
+		verbose_name = _('Sub Categoria')
+		verbose_name_plural = _('Sub Categorias')
+		app_label = 'empresas'
+	def __unicode__(self):
+		return '%s' %(self.nombre)
+
+
+
+
+

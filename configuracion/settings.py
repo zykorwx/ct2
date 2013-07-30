@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'apps.promociones',
     'apps.cupones',
     'apps.comentarios',
+    'apps.pagos',
 
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

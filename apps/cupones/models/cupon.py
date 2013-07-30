@@ -18,10 +18,10 @@ class Cupon(models.Model):
 	fecha_canjeado = models.DateField(blank=True, null=True)
 	tipo_user_tarjeta = models.CharField(max_length=2,choices=tipo_tarjeta,
 						default='pr')
+	empleado_atend = models.CharField(max_length=10,blank=True)
 	class Meta:
 		verbose_name = _('Solicitar un Cupon')
 		verbose_name_plural = _('Solicitar Cupones')
 		app_label= 'cupones'
 	def __unicode__(self):
 		return '%s' %(self.num_folio)
-	

@@ -28,10 +28,11 @@ Thumbs.db
 /tmp
 /public/upload/imagenes/*
 /public/static/admin/*
-/apps/comentarios/migrations/*
-/apps/cupones/migrations/*
-/apps/empresas/migrations/*
-/apps/pagos/migrations/*
-/apps/promociones/migrations/*
-/apps/usuarios/migrations/*
+
+/apps/comentarios/migrations
+/apps/cupones/migrations
+/apps/empresas/migrations
+/apps/pagos/migrations
+/apps/promociones/migrations
+/apps/usuarios/migrations
 
