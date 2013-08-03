@@ -4,22 +4,68 @@
 <!--Esta primer parte es para la cabecera de la pagina -->
 
 {% block foto_perfil %}
-	{% if imagen %}
-		<img src='{{ imagen }}' style="height:100%;">
-	{% endif %}
+	<div id="avatar"></div>
 {% endblock foto_perfil %}
 
 {% block nom_user %}
-	<h1>{{ user.get_full_name }}</h1>
+	<h1 id='nom_user'></h1>
 {% endblock nom_user %}
 
 {% block form_logueos %}
-	<h4>Eres: {{ user.groups.all.0 }}</h4>
-	<a  href='/usuario/cerrarSesion'>Cerrar sesion</a>
+	<div id='opciones_sesion'>
+
+	</div>
 {% endblock form_logueos %}
 
 <!--Termina parte para la cabecera de la pagina -->
 
+{% block scriptsFoot %}
+<script type="text/javascript">
+	var infoFace = '{{infoFacebook}}';
+	var imgTwitter = '{{imagenTwitter}}';
+	var nameTwitter = '{{nameTwitter}}';
+	if (infoFace != '' &&  imgTwitter != '')
+	{
+		$.getJSON(infoFace, function(data) {
+			nombre = data.first_name;
+			img = data.picture.data["url"];
+			html = '<img src="'+img+'" style="height:100%;">'
+
+			$( "#avatar" ).append(html);
+			$( "#nom_user" ).append(nombre +'</br>');
+		});
+		html1 = '<img src="'+imgTwitter+'" style="height:100%;">'
+		$( "#avatar" ).append(html1);
+		$( "#nom_user" ).append(nameTwitter +'</br>');
+		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>'
+		$( "#opciones_sesion" ).html(html_opciones);
+	} else if (infoFace != '' &&  imgTwitter == '')
+	{
+		$.getJSON(infoFace, function(data) {
+			nombre = data.first_name;
+			img = data.picture.data["url"];
+			html = '<img src="'+img+'" style="height:100%;">'
+
+			$( "#avatar" ).append(html);
+			$( "#nom_user" ).append(nombre +'</br>');
+		});
+		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>'
+		$( "#opciones_sesion" ).html(html_opciones);
+	}else if (infoFace == '' &&  imgTwitter != '')
+	{
+		html1 = '<img src="'+imgTwitter+'" style="height:100%;">'
+		$( "#avatar" ).append(html1);
+		$( "#nom_user" ).append(nameTwitter +'</br>');
+		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>'
+		$( "#opciones_sesion" ).html(html_opciones);
+	}
+
+	/*
+	var html = '<h2>{{list.nombre}}</h2><p>Oro = <b> '+ oro +'</b></p><p>Plata = <b> '+ plata +'</b></p><p>Platino = <b> '+ platino +'</b></p> \
+    	 <a href="/mostrar/{{ list.id }}">mostrar cantidad</a><hr><br>';**/
+</script>
+
+{% endblock scriptsFoot %}
 
 
 

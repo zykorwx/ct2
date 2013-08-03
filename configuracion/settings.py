@@ -106,6 +106,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'social_auth.middleware.SocialAuthExceptionMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -182,8 +183,8 @@ AUTHENTICATION_BACKENDS = (
 
 TWITTER_CONSUMER_KEY         = 'BRdqcpPEe5C9NZZ7ZEZ05Q'
 TWITTER_CONSUMER_SECRET      = 'eGrPixqmidtZpLCzNdUB96zVht8xrRLoiNLnJ2aZsbQ'
-FACEBOOK_APP_ID              = '307699549304561'
-FACEBOOK_API_SECRET          = 'f0a95f865b97fc8490eab5c299119682'
+FACEBOOK_APP_ID              = '188980267933208'
+FACEBOOK_API_SECRET          = '5bc9b759bf791f7eb213e49d2d4ab28d'
 
 # Las siguietes 3 lineas sirven para configurar el despues del login, la url de login, y el error
 LOGIN_URL          = '/login-form/'
@@ -192,9 +193,10 @@ LOGIN_ERROR_URL    = '/login-error/'
 
 SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
 SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+SOCIAL_AUTH_BACKEND_ERROR_URL = '/usuario'
 
-FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+FACEBOOK_EXTENDED_PERMISSIONS = ['email', 'user_about_me']
 
 FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'es_LA'}
 
-TWITTER_EXTRA_DATA = [('profile_image_url', 'profile_image_url')]
+TWITTER_EXTRA_DATA = [('profile_image_url', 'profile_image_url'),('screen_name', 'screen_name')]
