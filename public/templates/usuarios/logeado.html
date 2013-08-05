@@ -15,6 +15,11 @@
 	<div id='opciones_sesion'>
 
 	</div>
+	{% if infoFacebook != '' and nameTwitter != '' %}
+		<div id="desconectar">
+			<a href='{% url "socialauth_disconnect_individual" "twitter" idTwitter %}'>Desconectar de twitter</a>
+		</div>
+	{% endif %}
 {% endblock form_logueos %}
 
 <!--Termina parte para la cabecera de la pagina -->
@@ -24,13 +29,15 @@
 	var infoFace = '{{infoFacebook}}';
 	var imgTwitter = '{{imagenTwitter}}';
 	var nameTwitter = '{{nameTwitter}}';
+	var idTwitter = '{{idTwitter}}';
+
 	if (infoFace != '' &&  imgTwitter != '')
 	{
+		//Consulta json a facebook y agregamos la opcion de desvicular una cuenta  de twitter
 		$.getJSON(infoFace, function(data) {
 			nombre = data.first_name;
 			img = data.picture.data["url"];
 			html = '<img src="'+img+'" style="height:100%;">'
-
 			$( "#avatar" ).append(html);
 			$( "#nom_user" ).append(nombre +'</br>');
 		});
@@ -41,6 +48,7 @@
 		$( "#opciones_sesion" ).html(html_opciones);
 	} else if (infoFace != '' &&  imgTwitter == '')
 	{
+		// Solo mostramos cuando se loegean con facebook
 		$.getJSON(infoFace, function(data) {
 			nombre = data.first_name;
 			img = data.picture.data["url"];
@@ -49,20 +57,20 @@
 			$( "#avatar" ).append(html);
 			$( "#nom_user" ).append(nombre +'</br>');
 		});
-		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>'
+		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "socialauth_begin" "twitter" %}">Conectar con twitter</a>'
 		$( "#opciones_sesion" ).html(html_opciones);
-	}else if (infoFace == '' &&  imgTwitter != '')
+	}
+	//Descomentar para mostrar solo cuando se loegean con twitter
+	/*else if (infoFace == '' &&  imgTwitter != '')
 	{
+		
 		html1 = '<img src="'+imgTwitter+'" style="height:100%;">'
 		$( "#avatar" ).append(html1);
 		$( "#nom_user" ).append(nameTwitter +'</br>');
-		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>'
-		$( "#opciones_sesion" ).html(html_opciones);
-	}
+		var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "socialauth_begin" "facebook" %}">facebook</a>';
 
-	/*
-	var html = '<h2>{{list.nombre}}</h2><p>Oro = <b> '+ oro +'</b></p><p>Plata = <b> '+ plata +'</b></p><p>Platino = <b> '+ platino +'</b></p> \
-    	 <a href="/mostrar/{{ list.id }}">mostrar cantidad</a><hr><br>';**/
+		$( "#opciones_sesion" ).html(html_opciones);
+	}**/
 </script>
 
 {% endblock scriptsFoot %}

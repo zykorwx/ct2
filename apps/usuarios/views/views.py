@@ -38,15 +38,17 @@ def  logeado(request):
 		if request.user.social_auth.filter(provider='twitter').count() > 0:
 			getImgTwitter = request.user.social_auth.get(provider='twitter').extra_data['profile_image_url']
 			getNameTwitter = request.user.social_auth.get(provider='twitter').extra_data['screen_name']
+			getIdTwitter = request.user.social_auth.get(provider='twitter').id
 			getImgTwitter = getImgTwitter.replace('_normal', '_bigger')
 		else:
 			getImgTwitter = ''
 			getNameTwitter = ''
+			getIdTwitter = ''
 		if request.user.social_auth.filter(provider='facebook').count() > 0:
 			getInfoFaceBook = 'https://graph.facebook.com/%s?fields=first_name,picture.type(large)' % request.user.social_auth.get(provider='facebook').uid
 		else:
 			getInfoFaceBook = ''
-		return render_to_response('usuarios/logeado.html', {'imagenTwitter': getImgTwitter, 'nameTwitter': getNameTwitter, 'infoFacebook': getInfoFaceBook }, context_instance=RequestContext(request))
+		return render_to_response('usuarios/logeado.html', {'imagenTwitter': getImgTwitter, 'nameTwitter': getNameTwitter, 'idTwitter':getIdTwitter, 'infoFacebook': getInfoFaceBook }, context_instance=RequestContext(request))
 	return render_to_response('usuarios/logeado.html',  context_instance=RequestContext(request))
 
 

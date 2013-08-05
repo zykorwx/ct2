@@ -28,10 +28,11 @@
 
                           Inicio sesion	<br>			
 							<a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
-							<a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
-							<a href='/usuario/registroEmpresa'>Nueva empresa</a>
+                            <a href='/usuario/registroEmpresa'>Nueva empresa</a>
+							<!-- Esta seccion se elimina  
+                            <a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
 							<a href='/usuario/registroUsuario'>Nuevo Usuario</a>
-
+                            -->
 			            <form method="post" action="/usuario/login/">{% csrf_token %}
                         	{{ formulario.non_field_errors }}
 							{{ formulario.username.errors }}
