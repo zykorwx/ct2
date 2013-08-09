@@ -19,9 +19,9 @@ class UserField(forms.EmailField):
 # last_name = Nombre del encargado de la empresa
 # Para cambiar el label mostrado solo cambiar la propiedar label de cada campo
 class RegistroEmpresaForm(forms.Form):
-    first_name = forms.CharField(max_length=30, label=_(u"Nombre la empresa"))
-    last_name = forms.CharField(max_length=70, label=_(u"Nombre completo del encargado"))
-    email = UserField(label=_(u"Email"))
+    first_name = forms.CharField(max_length=50, label=_(u"Nombre la empresa"))
+    rfc = forms.CharField(max_length=15, label=_(u"R.F.C."))
+    email = UserField(label=_(u"Correo electronico"))
     password = forms.CharField(widget=forms.PasswordInput(), label=_(u"Contraseña"))
     password2 = forms.CharField(widget=forms.PasswordInput(), label=_(u"Repita contraseña"))
 

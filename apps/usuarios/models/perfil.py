@@ -63,6 +63,8 @@ class Perfil(models.Model):
 		app_label= 'usuarios'
 	def __unicode__(self):
 		return '%s' %(self.tipo_user_tarjera)
+
+
 	
 
 

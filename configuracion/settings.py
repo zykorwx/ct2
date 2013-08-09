@@ -191,6 +191,7 @@ LOGIN_URL          = '/login-form/'
 LOGIN_REDIRECT_URL = '/usuario/logeado'
 LOGIN_ERROR_URL    = '/login-error/'
 
+
 SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
 SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
 SOCIAL_AUTH_BACKEND_ERROR_URL = '/usuario'

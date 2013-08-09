@@ -15,17 +15,134 @@
 	<div id='opciones_sesion'>
 
 	</div>
-	{% if infoFacebook != '' and nameTwitter != '' %}
+	{% if infoFacebook != '' and nameTwitter != '' and tipo != 'Empresa' %}
 		<div id="desconectar">
 			<a href='{% url "socialauth_disconnect_individual" "twitter" idTwitter %}'>Desconectar de twitter</a>
 		</div>
+	{% elif tipo == 'Empresa'  %}
+		<a href='/usuario/cerrarSesion'>Cerrar sesion de empresa</a>
 	{% endif %}
+
+
 {% endblock form_logueos %}
 
 <!--Termina parte para la cabecera de la pagina -->
 
+{% block contenedorCuerpo %}
+<!-- Vinculo se muestra solo cuando se acaba de vincular una empresa con un usuario 
+	 Y manda mensaje por si la cuenta ya estaba vinculada -->
+{% if  vinculo %}
+	<p>Cuenta vinculada con : {{ vinculo.0.user.first_name }}</p>
+	{% if vinculo.1 == False %}
+		<p>Tu cuenta ya esta vinculada a esta empresa</p>
+	{% endif %}
+{% endif %}
+
+<!-- Encargado regresa las empresas de que el usuario logeado es encargado 
+	 Estas lineas son meramente informativas y su comportamiento debe ser cambiado-->
+{% if  encargado %}
+	{% for lista in encargado %}	
+	<p>Eres encargado de: {{ lista.empresa.nombre }}</p>
+	{% endfor %}
+{% endif %}
+
+<!-- Esta seccion es la parte del Api de facebook para poder hacer cosas con facebook 
+	 Cuidado al modificar las siguientes lineas el primer div fb-root es nesesario 
+	 Preguntenle a facebook el por que -->
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '188980267933208', // App ID
+    channelUrl : 'http://localhost:8000', // Channel File
+    status     : true, // check login status
+    cookie     : true, // enable cookies to allow the server to access the session
+    xfbml      : true  // parse XFBML
+  });
+
+  // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
+  // for any authentication related change, such as login, logout or session refresh. This means that
+  // whenever someone who was previously logged out tries to log in again, the correct case below 
+  // will be handled. 
+
+FB.Event.subscribe('auth.statusChange', function(response) {
+    // Here we specify what we do with the response anytime this event occurs. 
+    if (response.status === 'connected') {
+      // The response object is returned with a status field that lets the app know the current
+      // login status of the person. In this case, we're handling the situation where they 
+      // have logged in to the app.
+      getid();
+    }
+  });
+
+
+
+FB.getLoginStatus(function(response) {
+  if (response.status === 'not_authorized') {
+    // the user is logged in to Facebook, 
+    // but has not authenticated your app
+    console.log('Sin permisos');
+    $( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+  } else {
+    // the user isn't logged in to Facebook.
+    console.log('No estas logeado');
+    $( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+  }
+ });
+};
+
+
+  // Load the SDK asynchronously
+  (function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/mx_ES/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));
+
+  // Here we run a very simple test of the Graph API after login is successful. 
+  // This testAPI() function is only called in those cases. 
+  function getid() {
+    FB.api('/me', function(response) {
+      console.log('Tu id es, ' + response + '.');
+      var tipo = '{{ tipo }}';
+      if (tipo == 'Empresa'){
+      	$( "#opciones_sesion" ).html('<a href="/usuario/vincular/'+ response.id +'">Vincular</a>');
+      }
+    });
+  }
+
+  function authorizeAppInPopup() {
+    FB.login(function(response) {
+        if (response.authResponse) {
+            // User authorized app
+        } else {
+            // User cancelled login or did not fully authorize
+        }
+    }, {scope: 'email, user_about_me, user_interests, publish_actions, publish_stream'});
+}
+
+
+
+</script>
+
+
+{% endblock contenedorCuerpo %}
+
+
+
+
+
+
+
+
+
+
 {% block scriptsFoot %}
+
 <script type="text/javascript">
+	// Esta seccion es para los usuarios conectados con facebook
 	var infoFace = '{{infoFacebook}}';
 	var imgTwitter = '{{imagenTwitter}}';
 	var nameTwitter = '{{nameTwitter}}';

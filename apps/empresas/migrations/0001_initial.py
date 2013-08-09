@@ -19,18 +19,18 @@ class Migration(SchemaMigration):
         # Adding model 'Empresa'
         db.create_table(u'empresas_empresa', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('empresa_user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('nombre', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
-            ('giro', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['empresas.Categoria'])),
+            ('giro', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['empresas.Categoria'], null=True)),
             ('telefono', self.gf('django.db.models.fields.CharField')(max_length=15, blank=True)),
-            ('rfc', self.gf('django.db.models.fields.CharField')(max_length=15, blank=True)),
+            ('rfc', self.gf('django.db.models.fields.CharField')(unique=True, max_length=15)),
             ('email', self.gf('django.db.models.fields.EmailField')(max_length=75, null=True, blank=True)),
             ('sitio_web', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
-            ('municipio', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['empresas.Municipio'])),
-            ('colonia', self.gf('django.db.models.fields.CharField')(max_length=70)),
+            ('municipio', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['empresas.Municipio'], null=True)),
+            ('colonia', self.gf('django.db.models.fields.CharField')(max_length=70, blank=True)),
             ('direccion', self.gf('django.db.models.fields.CharField')(max_length=90)),
-            ('num_exterior', self.gf('django.db.models.fields.CharField')(max_length=8)),
+            ('num_exterior', self.gf('django.db.models.fields.CharField')(max_length=8, blank=True)),
             ('num_interior', self.gf('django.db.models.fields.CharField')(max_length=8, blank=True)),
-            ('encargado', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('fecha_alta', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('latitud_mapa', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
             ('longitud_mapa', self.gf('django.db.models.fields.FloatField')(null=True, blank=True)),
@@ -38,6 +38,14 @@ class Migration(SchemaMigration):
             ('total_capital', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=7, decimal_places=2)),
         ))
         db.send_create_signal('empresas', ['Empresa'])
+
+        # Adding model 'Encargados_empresas'
+        db.create_table(u'empresas_encargados_empresas', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('empresa', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['empresas.Empresa'])),
+        ))
+        db.send_create_signal('empresas', ['Encargados_empresas'])
 
         # Adding model 'Categoria'
         db.create_table(u'empresas_categoria', (
@@ -61,6 +69,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Empresa'
         db.delete_table(u'empresas_empresa')
+
+        # Deleting model 'Encargados_empresas'
+        db.delete_table(u'empresas_encargados_empresas')
 
         # Deleting model 'Categoria'
         db.delete_table(u'empresas_categoria')
@@ -114,24 +125,30 @@ class Migration(SchemaMigration):
         },
         'empresas.empresa': {
             'Meta': {'object_name': 'Empresa'},
-            'colonia': ('django.db.models.fields.CharField', [], {'max_length': '70'}),
+            'colonia': ('django.db.models.fields.CharField', [], {'max_length': '70', 'blank': 'True'}),
             'direccion': ('django.db.models.fields.CharField', [], {'max_length': '90'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            'encargado': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'empresa_user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'fecha_alta': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'giro': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Categoria']"}),
+            'giro': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Categoria']", 'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'latitud_mapa': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'longitud_mapa': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'municipio': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Municipio']"}),
+            'municipio': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Municipio']", 'null': 'True'}),
             'nombre': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'num_exterior': ('django.db.models.fields.CharField', [], {'max_length': '8'}),
+            'num_exterior': ('django.db.models.fields.CharField', [], {'max_length': '8', 'blank': 'True'}),
             'num_interior': ('django.db.models.fields.CharField', [], {'max_length': '8', 'blank': 'True'}),
-            'rfc': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
+            'rfc': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'sitio_web': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'telefono': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
             'total_capital': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '7', 'decimal_places': '2'})
+        },
+        'empresas.encargados_empresas': {
+            'Meta': {'object_name': 'Encargados_empresas'},
+            'empresa': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Empresa']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         'empresas.municipio': {
             'Meta': {'object_name': 'Municipio'},

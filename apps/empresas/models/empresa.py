@@ -58,24 +58,23 @@ class Municipio(models.Model):
 	
 ### Falta agregar el campo para logo de la empresa 
 class Empresa(models.Model):
-
+	empresa_user = models.ForeignKey(User)
 	nombre = models.CharField(unique=True, max_length=50, 
 				verbose_name=_('Nombre de la empresa'))
-	giro = models.ForeignKey('Categoria')
+	giro = models.ForeignKey('Categoria', null=True)
 	telefono = models.CharField(max_length=15, blank=True)
-	rfc = models.CharField(max_length=15, blank=True)
+	rfc = models.CharField(max_length=15, unique=True)
 	email = models.EmailField(null=True, blank=True, 
 				verbose_name=_('Correo electronico'))
 	sitio_web = models.URLField(null=True,blank=True,
 				verbose_name=_('Sitio web'))
-	municipio = models.ForeignKey('Municipio')
-	colonia = models.CharField(max_length=70, verbose_name=_('Colonia'))
+	municipio = models.ForeignKey('Municipio', null=True)
+	colonia = models.CharField(blank=True, max_length=70, verbose_name=_('Colonia'))
 	direccion  = models.CharField(max_length=90, verbose_name=_('Direccion'))
-	num_exterior = models.CharField(max_length=8,
+	num_exterior = models.CharField(blank=True, max_length=8,
 				verbose_name=_('Numero exterior'))
 	num_interior = models.CharField(max_length=8,blank=True, 
 					verbose_name=_('Numero interior'))
-	encargado = models.ForeignKey(User)
 	fecha_alta = models.DateTimeField(auto_now=True)
 	latitud_mapa = models.FloatField(null=True,blank=True)
 	longitud_mapa = models.FloatField(null=True,blank=True)
@@ -90,6 +89,15 @@ class Empresa(models.Model):
 	def __unicode__(self):
 		return '%s' %(self.nombre)
 
+# Se crea esta tabla para vincular los encargados que pueda tener una empresa
+class Encargados_empresas(models.Model):
+	user = models.ForeignKey(User)
+	empresa = models.ForeignKey(Empresa)
+
+	class Meta:
+		app_label = 'empresas'
+		verbose_name = _('Encargado_empresa')
+		verbose_name_plural = _('Encargados_empresas')
 
 
 #Modelo para crear las categorias a las que van a pertenecer las proociones

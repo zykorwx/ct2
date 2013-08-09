@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'apps.usuarios.views.index', name='home'),
     url(r'^logeado/$', 'apps.usuarios.views.logeado', name='Logeado'),
+    url(r'^vincular/(?P<facebook_uid>\d+)$', 'apps.usuarios.views.vinculaCuenta'),
 )
