@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User, Group
 from social_auth.models import UserSocialAuth
 from apps.empresas.models import Empresa, Encargados_empresas
-
+from apps.usuarios.decorators import login_empresa_required
 
 
 # Este index es solo para mostrar las opciones de login de la aplicacion
@@ -32,7 +32,8 @@ def verficaGrupo(usuario, nombre):
 
 
 
-# Este metodo solo una prueba para mostrar al usuario conectado y descargar su imagen de twitter
+# Este metodo solo es una prueba para mostrar al usuario conectado y descargar su imagen de twitter
+#@login_empresa_required(login_url='/usuario/cerrarSesion') esta linea es un ejemplo del decorador 
 @login_required(login_url='/usuario')
 def  logeado(request):
 	# En las siguientes lineas se valida que el usuario tenga enlazado cuentas sociales
@@ -88,10 +89,10 @@ def login(request):
 			return render_to_response('usuarios/login.html', \
 				context_instance=RequestContext(request))
 
-def vinculaCuenta(request, facebook_uid):
-	userF = UserSocialAuth.objects.filter(uid=facebook_uid)
-	if userF.count() > 0:
-		user = User.objects.get(pk = userF[0].user_id )
+def vinculaCuentaXFacebook(request, facebook_uid):
+	userFacebook = UserSocialAuth.objects.filter(uid=facebook_uid)
+	if userFacebook.count() > 0:
+		user = User.objects.get(pk = userFacebook[0].user_id )
 		empresa = Empresa.objects.filter(empresa_user = request.user)
 		if empresa.count() > 0: # Dejo esta validacion en caso de en un futuro ingresar sucursales
 			vincular = Encargados_empresas.objects.get_or_create(user = user, empresa = empresa[0])
@@ -99,7 +100,21 @@ def vinculaCuenta(request, facebook_uid):
 			# y debe ser cambiado este comportamiento, dado que no regresa una lista de usuarios vinculados
 			return render_to_response('usuarios/logeado.html', {'tipo':'Empresa', 'vinculo':vincular }, context_instance=RequestContext(request))
 	else:
-		return redirect('/usuario')
+		empresa = Empresa.objects.filter(empresa_user = request.user)
+		if empresa.count() > 0: # Dejo esta validacion en caso de en un futuro ingresar sucursales
+			# Cerramos sesion de la empresa y logeamos al nuevo usuario, y despues lo vinculamos a la empresa
+			logout(request)
+			# Despues de logearse el usuario, se envia a la siguiente ruta donde se vincula por medio del id
+			# de la empresa
+			return redirect('/login/facebook/?next=/usuario/vinculaCuentaXEmpresa/%s' % empresa[0].id)
+		
+
+def vinculaCuentaXEmpresa(request, empresa_id):
+	# Resive el id de la empresa con el que se obtine el objeto y y solo con el request del user 
+	# vinculamos las cuentas
+	empresa = Empresa.objects.get(pk = empresa_id)
+	vincular = Encargados_empresas.objects.get_or_create(user = request.user, empresa = empresa)
+	return redirect('/usuario')
 
 
 

@@ -83,13 +83,18 @@ FB.getLoginStatus(function(response) {
     // but has not authenticated your app
     console.log('Sin permisos');
     $( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
-  } else {
+  } else if (response.status === 'unknown') {
     // the user isn't logged in to Facebook.
     console.log('No estas logeado');
     $( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
   }
  });
 };
+
+
+
+
+
 
 
   // Load the SDK asynchronously
@@ -105,7 +110,7 @@ FB.getLoginStatus(function(response) {
   // This testAPI() function is only called in those cases. 
   function getid() {
     FB.api('/me', function(response) {
-      console.log('Tu id es, ' + response + '.');
+      console.log('Tu id es, ' + response.id + '.');
       var tipo = '{{ tipo }}';
       if (tipo == 'Empresa'){
       	$( "#opciones_sesion" ).html('<a href="/usuario/vincular/'+ response.id +'">Vincular</a>');
