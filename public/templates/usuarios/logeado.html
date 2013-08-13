@@ -78,6 +78,7 @@ FB.Event.subscribe('auth.statusChange', function(response) {
 
 
 FB.getLoginStatus(function(response) {
+
 	if (response.status === 'not_authorized') {
 		// the user is logged in to Facebook, 
 		// but has not authenticated your app
@@ -88,8 +89,21 @@ FB.getLoginStatus(function(response) {
 		console.log('No estas logeado');
 		$( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
 	}
+
+  if (response.status === 'not_authorized') {
+    // the user is logged in to Facebook, 
+    // but has not authenticated your app
+    console.log('Sin permisos');
+    $( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+  } else if (response.status === 'unknown') {
+    // the user isn't logged in to Facebook.
+    console.log('No estas logeado');
+    $( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+  }
+
  });
 };
+
 
 
 	// Load the SDK asynchronously
@@ -171,6 +185,31 @@ if(navigator.geolocation) {
     }, function() {
 
       handleNoGeolocation(true);
+
+
+
+
+
+
+  // Load the SDK asynchronously
+  (function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/mx_ES/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));
+
+  // Here we run a very simple test of the Graph API after login is successful. 
+  // This testAPI() function is only called in those cases. 
+  function getid() {
+    FB.api('/me', function(response) {
+      console.log('Tu id es, ' + response.id + '.');
+      var tipo = '{{ tipo }}';
+      if (tipo == 'Empresa'){
+      	$( "#opciones_sesion" ).html('<a href="/usuario/vincular/'+ response.id +'">Vincular</a>');
+      }
+
     });
    
       	

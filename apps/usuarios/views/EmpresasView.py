@@ -1,14 +1,18 @@
 #encoding:utf-8
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import reverse
 # RequestContext se agrega para poder utilizar la ruta de los archivos estatic se debe poner en todas las Views
 from django.template import RequestContext 
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from apps.usuarios.forms import RegistroEmpresaForm
 from apps.empresas.models import Empresa
+from django.core.mail import EmailMultiAlternatives
 # Este es un helper creado en la vista de esta aplicacion
 from views import verficaGrupo
+import random
+import string
 
 
 # Este es para registrar una nueva empresa
@@ -35,9 +39,38 @@ def nuevaEmpresaView(request):
 				verficaGrupo(new_user, 'empresa')
 				# Creamos el perfil de la empresa
 				perfil_empresa = Empresa.objects.create(nombre = nombre, email = email, rfc = rfc, empresa_user = new_user)
+				enviaCorreoConfirmacion(perfil_empresa)
 				return HttpResponseRedirect('/usuario')
 		else:
 			mensaje ="Los datos no son validos"
 			formulario =RegistroEmpresaForm()
 		return render_to_response('usuarios/registro.html',{'formulario': formulario, 'tipo':'Empresa'  }, \
 				context_instance=RequestContext(request))
+
+
+def enviaCorreoConfirmacion(empresa):
+	codigo = ''.join(random.choice(string.letters) for i in xrange(32))
+	empresa.codigo_confirmacion = codigo
+	empresa.is_active = False
+	empresa.save()
+	titulo = 'Correo de confirmación Filper'
+	url = reverse('user_confirm', kwargs={'empresa_id': empresa.id, 'codigo': codigo})
+	texto_contenido = u'Has clic en el siguiente enlace para confirmar tu correo electrónico. <a href="http://localhost:8000/%s"> Confirmar</a>' % url
+	html_contenido = u'<h1>%s</h1><p>Has clic en el siguiente enlace para confirmar tu correo electrónico.</p> <a href="http://localhost:8000%s"> Confirmar</a>' % (empresa.nombre, url)
+	msg = EmailMultiAlternatives(titulo, texto_contenido, 'contacto@filper.com', [empresa.email])
+	msg.attach_alternative(html_contenido, "text/html")
+	msg.send()
+
+
+def confirm(request, empresa_id, codigo):
+    try:
+        empresa = Empresa.objects.get(pk=empresa_id, codigo_confirmacion=codigo)
+    except Empresa.DoesNotExist:
+        # wrong key, do something, redirect to somewhere etc
+        template = '/usuario'
+    else:
+        empresa.is_active = True
+        empresa.save()
+        template = '/usuario/empresa'
+    return HttpResponseRedirect(template)
+

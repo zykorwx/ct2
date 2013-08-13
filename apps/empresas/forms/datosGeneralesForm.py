@@ -24,12 +24,10 @@ class RFCField(forms.CharField):
 # Recordar first_name = Nombre de la empresa
 # last_name = Nombre del encargado de la empresa
 # Para cambiar el label mostrado solo cambiar la propiedar label de cada campo
-class RegistroEmpresaForm(forms.Form):
-    first_name = forms.CharField(max_length=50, label=_(u"Nombre la empresa"))
-    rfc = RFCField(max_length=15, label=_(u"R.F.C."))
-    email = forms.EmailField(label=_(u"Correo electronico"))
-    password = forms.CharField(widget=forms.PasswordInput(), label=_(u"Contraseña"))
-    password2 = forms.CharField(widget=forms.PasswordInput(), label=_(u"Repita contraseña"))
+class DatosGeneralesEmpresaForm(forms.Form):
+    giro = forms.CharField(max_length=30, label=_(u"Giro de la empresa"))
+    telefono = forms.CharField(max_length=15, label=_(u"Telefono"))
+    sitio_web = forms.URLField(label=_(u"Sitio web"))
 
 
     # Comprobamos contraseña
@@ -42,5 +40,3 @@ class RegistroEmpresaForm(forms.Form):
     def clean(self,*args, **kwargs):
         self.cleaned_data.get('email')
         self.clean_password()
-        return super(RegistroEmpresaForm, self).clean(*args, **kwargs)
-
