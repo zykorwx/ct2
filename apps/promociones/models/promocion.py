@@ -38,7 +38,7 @@ class Promocion(models.Model):
 	imagen = models.ImageField(upload_to=get_image_path, 
 						verbose_name='Imagen promocion')
 	titulo_promocion = models.CharField(max_length=30,verbose_name=_('Titulo'))
-	descripcion = models.CharField(max_length=140 ,verbose_name=_('Descripcion'))
+	descripcion = models.CharField(max_length=140,verbose_name=_('Descripcion'))
 	precio_total =  models.DecimalField(max_digits=6, decimal_places=2, 
 						verbose_name=_(u'Precio'))
 	descuento = models.PositiveSmallIntegerField(default=5,

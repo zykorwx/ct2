@@ -51,81 +51,226 @@
 	 Preguntenle a facebook el por que -->
 <div id="fb-root"></div>
 <script>
-  window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '188980267933208', // App ID
-    channelUrl : 'http://localhost:8000', // Channel File
-    status     : true, // check login status
-    cookie     : true, // enable cookies to allow the server to access the session
-    xfbml      : true  // parse XFBML
-  });
+	window.fbAsyncInit = function() {
+	FB.init({
+		appId      : '188980267933208', // App ID
+		channelUrl : 'http://localhost:8000', // Channel File
+		status     : true, // check login status
+		cookie     : true, // enable cookies to allow the server to access the session
+		xfbml      : true  // parse XFBML
+	});
 
-  // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
-  // for any authentication related change, such as login, logout or session refresh. This means that
-  // whenever someone who was previously logged out tries to log in again, the correct case below 
-  // will be handled. 
+	// Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
+	// for any authentication related change, such as login, logout or session refresh. This means that
+	// whenever someone who was previously logged out tries to log in again, the correct case below 
+	// will be handled. 
 
 FB.Event.subscribe('auth.statusChange', function(response) {
-    // Here we specify what we do with the response anytime this event occurs. 
-    if (response.status === 'connected') {
-      // The response object is returned with a status field that lets the app know the current
-      // login status of the person. In this case, we're handling the situation where they 
-      // have logged in to the app.
-      getid();
-    }
-  });
+		// Here we specify what we do with the response anytime this event occurs. 
+		if (response.status === 'connected') {
+			// The response object is returned with a status field that lets the app know the current
+			// login status of the person. In this case, we're handling the situation where they 
+			// have logged in to the app.
+			getid();
+		}
+	});
 
 
 
 FB.getLoginStatus(function(response) {
-  if (response.status === 'not_authorized') {
-    // the user is logged in to Facebook, 
-    // but has not authenticated your app
-    console.log('Sin permisos');
-    $( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
-  } else {
-    // the user isn't logged in to Facebook.
-    console.log('No estas logeado');
-    $( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
-  }
+	if (response.status === 'not_authorized') {
+		// the user is logged in to Facebook, 
+		// but has not authenticated your app
+		console.log('Sin permisos');
+		$( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+	} else {
+		// the user isn't logged in to Facebook.
+		console.log('No estas logeado');
+		$( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+	}
  });
 };
 
 
-  // Load the SDK asynchronously
-  (function(d){
-   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-   if (d.getElementById(id)) {return;}
-   js = d.createElement('script'); js.id = id; js.async = true;
-   js.src = "//connect.facebook.net/mx_ES/all.js";
-   ref.parentNode.insertBefore(js, ref);
-  }(document));
+	// Load the SDK asynchronously
+	(function(d){
+	 var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+	 if (d.getElementById(id)) {return;}
+	 js = d.createElement('script'); js.id = id; js.async = true;
+	 js.src = "//connect.facebook.net/mx_ES/all.js";
+	 ref.parentNode.insertBefore(js, ref);
+	}(document));
 
-  // Here we run a very simple test of the Graph API after login is successful. 
-  // This testAPI() function is only called in those cases. 
-  function getid() {
-    FB.api('/me', function(response) {
-      console.log('Tu id es, ' + response + '.');
-      var tipo = '{{ tipo }}';
-      if (tipo == 'Empresa'){
-      	$( "#opciones_sesion" ).html('<a href="/usuario/vincular/'+ response.id +'">Vincular</a>');
-      }
-    });
-  }
+	// Here we run a very simple test of the Graph API after login is successful. 
+	// This testAPI() function is only called in those cases. 
+	function getid() {
+		FB.api('/me', function(response) {
+			console.log('Tu id es, ' + response + '.');
+			var tipo = '{{ tipo }}';
+			if (tipo == 'Empresa'){
+				$( "#opciones_sesion" ).html('<a href="/usuario/vincular/'+ response.id +'">Vincular</a>');
+			}
+		});
+	}
 
-  function authorizeAppInPopup() {
-    FB.login(function(response) {
-        if (response.authResponse) {
-            // User authorized app
-        } else {
-            // User cancelled login or did not fully authorize
-        }
-    }, {scope: 'email, user_about_me, user_interests, publish_actions, publish_stream'});
+	function authorizeAppInPopup() {
+		FB.login(function(response) {
+				if (response.authResponse) {
+						// User authorized app
+				} else {
+						// User cancelled login or did not fully authorize
+				}
+		}, {scope: 'email, user_about_me, user_interests, publish_actions, publish_stream'});
 }
 
 
 
 </script>
+
+
+<script type="text/javascript"
+			src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k&sensor=true">
+		</script>
+
+		<script type="text/javascript">
+var map;
+var markers = [];
+var myLatlng;
+function initialize() {
+
+
+ var myLatlng = new google.maps.LatLng(19.07575444948174, -98.29949116640626);
+  var mapOptions = {
+   				center: myLatlng,
+					zoom: 14,
+					panControl: false,
+					zoomControl: true,
+					mapTypeControl: false,
+					scaleControl: false,
+					streetViewControl: false,
+					overviewMapControl: true,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById("map-empresa"),mapOptions);
+
+
+if(navigator.geolocation) {
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+    
+	 var lat =position.coords.latitude;
+    var lon =  position.coords.longitude;
+    var hid_lat = document.getElementById("caja");
+    var hid_lon = document.getElementById("caja1");
+     hid_lat.value = lat; 
+     hid_lon.value = lon; 
+      
+      map.setCenter(pos);
+    }, function() {
+
+      handleNoGeolocation(true);
+    });
+   
+      	
+  } else {
+    // Browser doesn't support Geolocation
+    
+    handleNoGeolocation(false);
+  };
+  
+	
+
+
+  google.maps.event.addListener(map, 'click', function(event) {
+  	 deleteOverlays();
+    addMarker(event.latLng);
+  });
+}
+
+
+
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag) {
+  		map.setCenter(myLatlng);
+
+    var content = 'Error: The Geolocation service failed.';
+  } else {
+    var content = 'Error: Your browser doesn\'t support geolocation.';
+ 			map.setCenter(myLatlng);
+
+  }
+
+
+ 
+}
+
+// Add a marker to the map and push to the array.
+function addMarker(location) {
+
+    var lon =  location;
+   alert(lon);
+    var hid_lon = document.getElementById("caja1");
+     hid_lon.value = lon; 
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  markers.push(marker);
+}
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the overlays from the map, but keeps them in the array.
+function clearOverlays() {
+  setAllMap(null);
+}
+
+
+
+// Deletes all markers in the array by removing references to them.
+function deleteOverlays() {
+  clearOverlays();
+  markers = [];
+}
+
+		</script>
+
+
+
+	{% block banerIzCuerpo %}
+							
+		{% endblock banerIzCuerpo %}
+							
+		{% block banerDerCuerpo %}
+							
+	{% endblock banerDerCuerpo %}
+
+		 {% block mapa %}
+			 
+		{% endblock mapa %}
+
+<div class="sectionConted" >
+		
+ 
+							<div id="map-empresa" style="width:400px;height:400px; background-color:orange;float:left;">
+		
+				</div>    
+				 <div id="map-form" style="width:400px;height:400px; background-color:blue;float:left;">
+			<button onclick="initialize()">Mostrar mapa</button>
+			<input type="hidden" name="h_lat" id="hid_lat" value="none">
+			<input type="hidden" name="h_lon" id="hid_lon" value="none">
+			<input name="color" id="caja" type="text" value="hola caja"> 
+			<input name="color1" id="caja1" type="text" value="hola caja1"> 
+				</div>       
+</div>
+
 
 
 {% endblock contenedorCuerpo %}
@@ -191,12 +336,6 @@ FB.getLoginStatus(function(response) {
 </script>
 
 {% endblock scriptsFoot %}
-
-
-
-
-
-
 
 
 
