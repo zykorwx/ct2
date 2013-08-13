@@ -1,6 +1,9 @@
 # -*- coding: utf-8 *-*
 from django.db import models
 from django.contrib.auth.models import User
+# Api de manejo de imagen
+#from imagekit.models import ImageSpecField
+#from imagekit.processors import ResizeToFill
 
 
 from django.utils.translation import ugettext_lazy as _
@@ -56,10 +59,14 @@ class Municipio(models.Model):
 	def __unicode__(self):
 		return '%s' %(self.nombre)
 	
+	# Metodo para  generar la ruta donde se guardaran los logos
+def get_image_path(empresa, filename):
+    return os.path.join('imagenes/empresas/'+str(empresa.id), 'logos', filename)
+
 ### Falta agregar el campo para logo de la empresa 
 class Empresa(models.Model):
 	empresa_user = models.ForeignKey(User)
-	nombre = models.CharField(unique=True, max_length=50, 
+	nombre = models.CharField(max_length=50, 
 				verbose_name=_('Nombre de la empresa'))
 	giro = models.ForeignKey('Categoria', null=True)
 	telefono = models.CharField(max_length=15, blank=True)
@@ -79,6 +86,7 @@ class Empresa(models.Model):
 	latitud_mapa = models.FloatField(null=True,blank=True)
 	longitud_mapa = models.FloatField(null=True,blank=True)
 	is_active = models.BooleanField(default=True) 
+	codigo_confirmacion = models.CharField(max_length=32, blank=True)
 	total_capital =  models.DecimalField(max_digits=7, decimal_places=2,
 											default=0.0)
 	class Meta:

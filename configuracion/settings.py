@@ -63,7 +63,7 @@ MEDIA_ROOT = os.path.join(RUTA_PROYECTO,'../public/upload')
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = '/media/'
+MEDIA_URL = '/public/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'social_auth',
     'south',
+    'imagekit',
     'apps.usuarios',
     'apps.empresas',
     'apps.promociones',
@@ -201,3 +202,12 @@ FACEBOOK_EXTENDED_PERMISSIONS = ['email', 'user_about_me']
 FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'es_LA'}
 
 TWITTER_EXTRA_DATA = [('profile_image_url', 'profile_image_url'),('screen_name', 'screen_name')]
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'filperempresa@gmail.com'
+EMAIL_HOST_PASSWORD = 'filper1234'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

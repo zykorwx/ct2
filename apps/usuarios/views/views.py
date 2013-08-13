@@ -61,7 +61,15 @@ def  logeado(request):
 		 'infoFacebook': getInfoFaceBook,
 		 'encargado': encargado},
 		 context_instance=RequestContext(request))
-	return render_to_response('usuarios/logeado.html', {'tipo':'Empresa'}, context_instance=RequestContext(request))
+	return HttpResponseRedirect('/usuario/empresa')
+
+
+@login_empresa_required(login_url='/usuario')
+def logeoEmpresa(request):
+	empresa = Empresa.objects.filter(empresa_user = request.user.id)
+	dominio = 'http://www.' + empresa[0].email.split("@")[-1] # Obtenemos el dominio del correo de la empresa
+	encargados = Encargados_empresas.objects.filter(empresa = empresa[0].id)
+	return render_to_response('usuarios/empresa_logeado.html', {'empresa': empresa[0], 'encargados': encargados, 'dominio': dominio}, context_instance=RequestContext(request))
 
 
 # Cerrar sesion abierta (cualquiera)
