@@ -29,7 +29,7 @@ def nuevoConsumidorView(request):
 				new_user.last_name=formulario.cleaned_data['last_name']
 				new_user.save()
 				verficaGrupo(new_user, 'consumidor')
-				return HttpResponseRedirect('/usuario')
+				return HttpResponseRedirect('/')
 		else:
 			mensaje ="Los datos no son validos"
 			formulario =RegistroConsumidorForm()

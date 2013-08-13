@@ -1,57 +1,133 @@
 {% extends 'template_base.html' %}
-{% block tittle %}Inicio de sesión {% endblock %}
+{% block tittle %}Filper {% endblock %}
 
 
 
 
  {% block cabecera %}
-        	<div class="headBody" > 
-        	 {% block contenedorPrincipalHead %}
-        		<div class="sectionConted" >
-        			
-        			{% block logotipoHead %} 
+            <div class="headBody" > 
+             {% block contenedorPrincipalHead %}
+                <div class="sectionConted" >
+                    
+                    {% block logotipoHead %} 
                         <div style="width:20%;height:100%; background-color:blue;float:left;">
                             {% block foto_perfil %}
-
+                                <div id="avatar"></div>
                             {% endblock foto_perfil %}
                         </div>
                         <div style="width:30%;height:100%; background-color:#d4d3d3;float:left;">
                            <h2>
-                           	{% block nom_user %}
-
-                           	{% endblock nom_user %}
-                           	
+                            {% block nom_user %}
+                                <h1 id='nom_user'></h1>
+                            {% endblock nom_user %}
+                            
                            </h2>
                         </div>
-        			   <div style="width:50%;height:100%;  background-color:#f5b7b7;float:left;">
-        			   	{% block form_logueos %}
-
-                          Inicio sesion	<br>			
-							<a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
-                            <a href='/usuario/registroEmpresa'>Nueva empresa</a>
-							<!-- Esta seccion se elimina  
-                            <a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
-							<a href='/usuario/registroUsuario'>Nuevo Usuario</a>
-                            -->
-			            <form method="post" action="/usuario/login/">{% csrf_token %}
-                        	{{ formulario.non_field_errors }}
-							{{ formulario.username.errors }}
-                            <input id="id_username" name="username" type="text" placeholder="Nombre de usuario">
-                            {{ formulario.password.errors }}
-                            <input id="id_password" name="password" type="password" placeholder="Contraseña">
-                            <button type="submit" class="btn">Iniciar sesión</button>
-                        </form>
+                       <div style="width:50%;height:100%;  background-color:#f5b7b7;float:left;">
+                        {% block form_logueos %}
+                            <div id='opciones_sesion'></div>
+                            {% if  nameTwitter != None and nameTwitter != '' %}
+                                <div id="desconectar">
+                                    <a href='{% url "socialauth_disconnect_individual" "twitter" idTwitter %}'>Desconectar de twitter </a>
+                                </div>
+                            {% elif infoFacebook == None %}
+                                Inicio sesion <br>            
+                                <a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
+                                <a href='/registroEmpresa'>Nueva empresa</a>
+                                    <!-- Esta seccion se elimina  
+                                    <a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
+                                    <a href='/usuario/registroUsuario'>Nuevo Usuario</a>
+                                    -->
+                                <form method="post" action="/login/">{% csrf_token %}
+                                    {{ formulario.non_field_errors }}
+                                    {{ formulario.username.errors }}
+                                    <input id="id_username" name="username" type="text" placeholder="Nombre de usuario">
+                                    {{ formulario.password.errors }}
+                                    <input id="id_password" name="password" type="password" placeholder="Contraseña">
+                                    <button type="submit" class="btn">Iniciar sesión</button>
+                                </form>
+                            {% endif %}
                         {% endblock form_logueos %}
                         </div>
-        			{% endblock logotipoHead %}
-        			
-        			{% block menuRightHead %} 
-        			
-        			{% endblock menuRightHead %}
-        			
-        		</div>
-        	{% endblock contenedorPrincipalHead %}
-        	</div>
-        {% endblock cabecera %}	
+                    {% endblock logotipoHead %}
+                    
+                    {% block menuRightHead %} 
+                    
+                    {% endblock menuRightHead %}
+                    
+                </div>
+            {% endblock contenedorPrincipalHead %}
+            </div>
+        {% endblock cabecera %} 
+    {% block contenedorCuerpo %}
+        <!-- Vinculo se muestra solo cuando se acaba de vincular una empresa con un usuario 
+             Y manda mensaje por si la cuenta ya estaba vinculada -->
+        {% if  vinculo %}
+            <p>Cuenta vinculada con : {{ vinculo.0.user.first_name }}</p>
+            {% if vinculo.1 == False %}
+                <p>Tu cuenta ya esta vinculada a esta empresa</p>
+            {% endif %}
+        {% endif %}
+        <!-- Encargado regresa las empresas de que el usuario logeado es encargado 
+             Estas lineas son meramente informativas y su comportamiento debe ser cambiado-->
+        {% if  encargado %}
+            {% for lista in encargado %}    
+            <p>Eres encargado de: {{ lista.empresa.nombre }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endblock contenedorCuerpo %}
+
+    {% block scriptsFoot %}
+        <script type="text/javascript">
+            // Esta seccion es para los usuarios conectados con facebook
+            var infoFace = '{{infoFacebook}}';
+            var imgTwitter = '{{imagenTwitter}}';
+            var nameTwitter = '{{nameTwitter}}';
+            var idTwitter = '{{idTwitter}}';
+
+            if (infoFace != '' &&  imgTwitter != '')
+            {
+                //Consulta json a facebook y agregamos la opcion de desvicular una cuenta  de twitter
+                $.getJSON(infoFace, function(data) {
+                    nombre = data.first_name;
+                    img = data.picture.data["url"];
+                    html = '<img src="'+img+'" style="height:100%;">'
+                    $( "#avatar" ).append(html);
+                    $( "#nom_user" ).append(nombre +'</br>');
+                });
+                html1 = '<img src="'+imgTwitter+'" style="height:100%;">'
+                $( "#avatar" ).append(html1);
+                $( "#nom_user" ).append(nameTwitter +'</br>');
+                var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/cerrarSesion">Cerrar sesion</a>'
+                $( "#opciones_sesion" ).html(html_opciones);
+            } else if (infoFace != '' &&  imgTwitter == '')
+            {
+                // Solo mostramos cuando se loegean con facebook
+                $.getJSON(infoFace, function(data) {
+                    nombre = data.first_name;
+                    img = data.picture.data["url"];
+                    html = '<img src="'+img+'" style="height:100%;">'
+
+                    $( "#avatar" ).append(html);
+                    $( "#nom_user" ).append(nombre +'</br>');
+                });
+                var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "socialauth_begin" "twitter" %}">Conectar con twitter</a>'
+                $( "#opciones_sesion" ).html(html_opciones);
+            }
+            //Descomentar para mostrar solo cuando se loegean con twitter
+            /*else if (infoFace == '' &&  imgTwitter != '')
+            {
+                
+                html1 = '<img src="'+imgTwitter+'" style="height:100%;">'
+                $( "#avatar" ).append(html1);
+                $( "#nom_user" ).append(nameTwitter +'</br>');
+                var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "socialauth_begin" "facebook" %}">facebook</a>';
+
+                $( "#opciones_sesion" ).html(html_opciones);
+            }**/
+        </script>
+    {% endblock scriptsFoot %}
+
+
 
 

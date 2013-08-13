@@ -18,7 +18,7 @@ urlpatterns = patterns('',
     	name='detalle_promocion'),
     
     url(r'', include('social_auth.urls')),
-    url(r'^usuario/', include('apps.usuarios.urls.urls')),
+    url(r'', include('apps.usuarios.urls.urls')),
 
 )
 

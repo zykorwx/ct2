@@ -16,7 +16,7 @@
 
 	</div>
 
-		<a href='/usuario/cerrarSesion'>Cerrar sesion de empresa</a>
+		<a href='/cerrarSesion'>Cerrar sesion de empresa</a>
 {% endblock form_logueos %}
 
 <!--Termina parte para la cabecera de la pagina -->
@@ -38,7 +38,7 @@
 		 Estas lineas son meramente informativas y su comportamiento debe ser cambiado-->
 	{% if  encargados %}
 		{% for encargado in encargados %}	
-		<p>La emrpesa tiene los siguientes encargados: {{ encargado.user.first_name }} {{ encargado.user.last_name }}</p>
+		<p>La empresa tiene los siguientes encargados: {{ encargado.user.first_name }} {{ encargado.user.last_name }}</p>
 		{% endfor %}
 	{% endif %}
 
@@ -47,6 +47,8 @@
 		 Preguntenle a facebook el por que -->
 	<div id="fb-root"></div>
 	<script>
+	// api y datos de facebook
+	// aqui empieza la clase de facebook
 	  window.fbAsyncInit = function() {
 	  FB.init({
 	    appId      : '188980267933208', // App ID
@@ -61,33 +63,46 @@
 	  // whenever someone who was previously logged out tries to log in again, the correct case below 
 	  // will be handled. 
 
+	  //Me suscribo al sistema push de face para detectar si el usuario ya se logeo o ya tiene permisos
 	FB.Event.subscribe('auth.statusChange', function(response) {
 	    // Here we specify what we do with the response anytime this event occurs. 
 	    if (response.status === 'connected') {
 	      // The response object is returned with a status field that lets the app know the current
 	      // login status of the person. In this case, we're handling the situation where they 
 	      // have logged in to the app.
-	      getid();
+	      // llamamos al metodo que muestra el link vincular
+	      vincular();
 	    }
 	  });
 
-
-
+	//obtengo el estado actual del usuario pero de forma no asincrona
 	FB.getLoginStatus(function(response) {
 	  if (response.status === 'not_authorized') {
-	    // the user is logged in to Facebook, 
-	    // but has not authenticated your app
+	    // Si el usuario esta logeado
+	    // pero no tiene permisos mostramos esto
 	    console.log('Sin permisos');
 	    $( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
 	  } else if (response.status === 'unknown') {
-	    // the user isn't logged in to Facebook.
+	    // Si el usuario no esta logeado
+	    // mostramos esto
 	    console.log('No estas logeado');
 	    $( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
 	  }
 	 });
+	//aqui acaba la clase de facebook
 	};
 
+	// Este metodo es el que muestra el link vincular
+	  function vincular() {
+	    FB.api('/me', function(response) {
+	      console.log('Tu id es, ' + response.id + '.');
+	      $( "#opciones_sesion" ).html('<a href="/vincular/'+ response.id +'">Vincular</a>');
+	    });
+	  }
+
+
 	  // Load the SDK asynchronously
+	  // ignorenlo xD
 	  (function(d){
 	   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
 	   if (d.getElementById(id)) {return;}
@@ -98,13 +113,9 @@
 
 	  // Here we run a very simple test of the Graph API after login is successful. 
 	  // This testAPI() function is only called in those cases. 
-	  function getid() {
-	    FB.api('/me', function(response) {
-	      console.log('Tu id es, ' + response.id + '.');
-	      $( "#opciones_sesion" ).html('<a href="/usuario/vincular/'+ response.id +'">Vincular</a>');
-	    });
-	  }
 
+
+	  // Este metodo es con el que se lanza el pop up para logearse o los permisos
 	  function authorizeAppInPopup() {
 	    FB.login(function(response) {
 	        if (response.authResponse) {

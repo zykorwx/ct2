@@ -40,7 +40,7 @@ def nuevaEmpresaView(request):
 				# Creamos el perfil de la empresa
 				perfil_empresa = Empresa.objects.create(nombre = nombre, email = email, rfc = rfc, empresa_user = new_user)
 				enviaCorreoConfirmacion(perfil_empresa)
-				return HttpResponseRedirect('/usuario')
+				return HttpResponseRedirect('/')
 		else:
 			mensaje ="Los datos no son validos"
 			formulario =RegistroEmpresaForm()
@@ -67,10 +67,10 @@ def confirm(request, empresa_id, codigo):
         empresa = Empresa.objects.get(pk=empresa_id, codigo_confirmacion=codigo)
     except Empresa.DoesNotExist:
         # wrong key, do something, redirect to somewhere etc
-        template = '/usuario'
+        template = '/'
     else:
         empresa.is_active = True
         empresa.save()
-        template = '/usuario/empresa'
+        template = '/empresa'
     return HttpResponseRedirect(template)
 

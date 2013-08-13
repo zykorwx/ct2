@@ -189,13 +189,13 @@ FACEBOOK_API_SECRET          = '5bc9b759bf791f7eb213e49d2d4ab28d'
 
 # Las siguietes 3 lineas sirven para configurar el despues del login, la url de login, y el error
 LOGIN_URL          = '/login-form/'
-LOGIN_REDIRECT_URL = '/usuario/logeado'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL    = '/login-error/'
 
 
 SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
 SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
-SOCIAL_AUTH_BACKEND_ERROR_URL = '/usuario'
+SOCIAL_AUTH_BACKEND_ERROR_URL = '/'
 
 FACEBOOK_EXTENDED_PERMISSIONS = ['email', 'user_about_me']
 

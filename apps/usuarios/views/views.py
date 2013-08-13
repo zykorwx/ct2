@@ -16,7 +16,31 @@ from apps.usuarios.decorators import login_empresa_required
 # Este index es solo para mostrar las opciones de login de la aplicacion
 def  index(request):
 	if request.user.is_authenticated():
-		return redirect('/usuario/logeado')
+		if request.user.social_auth.filter().count() > 0:
+			verficaGrupo(request.user, 'consumidor')
+			if request.user.social_auth.filter(provider='twitter').count() > 0:
+				getImgTwitter = request.user.social_auth.get(provider='twitter').extra_data['profile_image_url']
+				getNameTwitter = request.user.social_auth.get(provider='twitter').extra_data['screen_name']
+				getIdTwitter = request.user.social_auth.get(provider='twitter').id
+				getImgTwitter = getImgTwitter.replace('_normal', '_bigger')
+			else:
+				getImgTwitter = ''
+				getNameTwitter = ''
+				getIdTwitter = ''
+			if request.user.social_auth.filter(provider='facebook').count() > 0:
+				getInfoFaceBook = 'https://graph.facebook.com/%s?fields=first_name,picture.type(large)' % request.user.social_auth.get(provider='facebook').uid
+			else:
+				getInfoFaceBook = ''
+			# Las siguientes lineas validan si el usuario que se logea es encargado de alguna empresa
+			# y retorna las empresas que administra
+			encargado = Encargados_empresas.objects.filter(user = request.user)
+			return render_to_response('usuarios/index.html', {'imagenTwitter': getImgTwitter,
+			 'nameTwitter': getNameTwitter,
+			 'idTwitter':getIdTwitter,
+			 'infoFacebook': getInfoFaceBook,
+			 'encargado': encargado},
+			 context_instance=RequestContext(request))
+		return HttpResponseRedirect('/empresa')
 	else:
 		return render_to_response('usuarios/index.html',  context_instance=RequestContext(request))
 
@@ -31,40 +55,7 @@ def verficaGrupo(usuario, nombre):
 		usuario.groups.add(aux[0])
 
 
-
-# Este metodo solo es una prueba para mostrar al usuario conectado y descargar su imagen de twitter
-#@login_empresa_required(login_url='/usuario/cerrarSesion') esta linea es un ejemplo del decorador 
-@login_required(login_url='/usuario')
-def  logeado(request):
-	# En las siguientes lineas se valida que el usuario tenga enlazado cuentas sociales
-	if request.user.social_auth.filter().count() > 0:
-		verficaGrupo(request.user, 'consumidor')
-		if request.user.social_auth.filter(provider='twitter').count() > 0:
-			getImgTwitter = request.user.social_auth.get(provider='twitter').extra_data['profile_image_url']
-			getNameTwitter = request.user.social_auth.get(provider='twitter').extra_data['screen_name']
-			getIdTwitter = request.user.social_auth.get(provider='twitter').id
-			getImgTwitter = getImgTwitter.replace('_normal', '_bigger')
-		else:
-			getImgTwitter = ''
-			getNameTwitter = ''
-			getIdTwitter = ''
-		if request.user.social_auth.filter(provider='facebook').count() > 0:
-			getInfoFaceBook = 'https://graph.facebook.com/%s?fields=first_name,picture.type(large)' % request.user.social_auth.get(provider='facebook').uid
-		else:
-			getInfoFaceBook = ''
-		# Las siguientes lineas validan si el usuario que se logea es encargado de alguna empresa
-		# y retorna las empresas que administra
-		encargado = Encargados_empresas.objects.filter(user = request.user)
-		return render_to_response('usuarios/logeado.html', {'imagenTwitter': getImgTwitter,
-		 'nameTwitter': getNameTwitter,
-		 'idTwitter':getIdTwitter,
-		 'infoFacebook': getInfoFaceBook,
-		 'encargado': encargado},
-		 context_instance=RequestContext(request))
-	return HttpResponseRedirect('/usuario/empresa')
-
-
-@login_empresa_required(login_url='/usuario')
+@login_empresa_required(login_url='/')
 def logeoEmpresa(request):
 	empresa = Empresa.objects.filter(empresa_user = request.user.id)
 	dominio = 'http://www.' + empresa[0].email.split("@")[-1] # Obtenemos el dominio del correo de la empresa
@@ -73,15 +64,15 @@ def logeoEmpresa(request):
 
 
 # Cerrar sesion abierta (cualquiera)
-@login_required(login_url='/usuario')
+@login_required(login_url='/')
 def cerrarSesion(request):
 	logout(request)
-	return HttpResponseRedirect('/usuario')
+	return HttpResponseRedirect('/')
 
 # Logeo por medio de email de cualquier tipo de usuario (Empresas, Consumidores que no se hayan registrado usando redes sociales)
 def login(request):
 	if request.user.is_authenticated():
-		return redirect('/usuario')
+		return redirect('/')
 	else:
 		email = request.POST['email']
 		password = request.POST['password']
@@ -89,7 +80,7 @@ def login(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				return redirect('/usuario')
+				return redirect('/')
 			else:
 				return render_to_response('usuarios/login.html', \
 					context_instance=RequestContext(request))
@@ -104,9 +95,10 @@ def vinculaCuentaXFacebook(request, facebook_uid):
 		empresa = Empresa.objects.filter(empresa_user = request.user)
 		if empresa.count() > 0: # Dejo esta validacion en caso de en un futuro ingresar sucursales
 			vincular = Encargados_empresas.objects.get_or_create(user = user, empresa = empresa[0])
+			logout(request)
 			# El proposito de la siguiente linea es solo mostrar que el usuario que ha sido vinculado, no es esencial
 			# y debe ser cambiado este comportamiento, dado que no regresa una lista de usuarios vinculados
-			return render_to_response('usuarios/logeado.html', {'tipo':'Empresa', 'vinculo':vincular }, context_instance=RequestContext(request))
+			return redirect('/login/facebook/')
 	else:
 		empresa = Empresa.objects.filter(empresa_user = request.user)
 		if empresa.count() > 0: # Dejo esta validacion en caso de en un futuro ingresar sucursales
@@ -114,7 +106,7 @@ def vinculaCuentaXFacebook(request, facebook_uid):
 			logout(request)
 			# Despues de logearse el usuario, se envia a la siguiente ruta donde se vincula por medio del id
 			# de la empresa
-			return redirect('/login/facebook/?next=/usuario/vinculaCuentaXEmpresa/%s' % empresa[0].id)
+			return redirect('/login/facebook/?next=/vinculaCuentaXEmpresa/%s' % empresa[0].id)
 		
 
 def vinculaCuentaXEmpresa(request, empresa_id):
@@ -122,7 +114,7 @@ def vinculaCuentaXEmpresa(request, empresa_id):
 	# vinculamos las cuentas
 	empresa = Empresa.objects.get(pk = empresa_id)
 	vincular = Encargados_empresas.objects.get_or_create(user = request.user, empresa = empresa)
-	return redirect('/usuario')
+	return redirect('/')
 
 
 
