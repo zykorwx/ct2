@@ -47,15 +47,16 @@
 		 Preguntenle a facebook el por que -->
 	<div id="fb-root"></div>
 	<script>
+	
 	// api y datos de facebook
 	// aqui empieza la clase de facebook
 	  window.fbAsyncInit = function() {
 	  FB.init({
-	    appId      : '188980267933208', // App ID
-	    channelUrl : 'http://localhost:8000', // Channel File
-	    status     : true, // check login status
-	    cookie     : true, // enable cookies to allow the server to access the session
-	    xfbml      : true  // parse XFBML
+		appId      : '188980267933208', // App ID
+		channelUrl : 'http://localhost:8000', // Channel File
+		status     : true, // check login status
+		cookie     : true, // enable cookies to allow the server to access the session
+		xfbml      : true  // parse XFBML
 	  });
 
 	  // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
@@ -65,28 +66,28 @@
 
 	  //Me suscribo al sistema push de face para detectar si el usuario ya se logeo o ya tiene permisos
 	FB.Event.subscribe('auth.statusChange', function(response) {
-	    // Here we specify what we do with the response anytime this event occurs. 
-	    if (response.status === 'connected') {
-	      // The response object is returned with a status field that lets the app know the current
-	      // login status of the person. In this case, we're handling the situation where they 
-	      // have logged in to the app.
-	      // llamamos al metodo que muestra el link vincular
-	      vincular();
-	    }
+		// Here we specify what we do with the response anytime this event occurs. 
+		if (response.status === 'connected') {
+		  // The response object is returned with a status field that lets the app know the current
+		  // login status of the person. In this case, we're handling the situation where they 
+		  // have logged in to the app.
+		  // llamamos al metodo que muestra el link vincular
+		  vincular();
+		}
 	  });
 
 	//obtengo el estado actual del usuario pero de forma no asincrona
 	FB.getLoginStatus(function(response) {
 	  if (response.status === 'not_authorized') {
-	    // Si el usuario esta logeado
-	    // pero no tiene permisos mostramos esto
-	    console.log('Sin permisos');
-	    $( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+		// Si el usuario esta logeado
+		// pero no tiene permisos mostramos esto
+		console.log('Sin permisos');
+		$( "#opciones_sesion" ).append('No tienes permisos de facebook para vincular tu cuenta, si deseas obtener los permisos has clic <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
 	  } else if (response.status === 'unknown') {
-	    // Si el usuario no esta logeado
-	    // mostramos esto
-	    console.log('No estas logeado');
-	    $( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
+		// Si el usuario no esta logeado
+		// mostramos esto
+		console.log('No estas logeado');
+		$( "#opciones_sesion" ).append('No te encuentras logeado en facebook, si deseas iniciar tu sesion <a href="#" onclick="authorizeAppInPopup()" >aqui</a>');
 	  }
 	 });
 	//aqui acaba la clase de facebook
@@ -94,10 +95,10 @@
 
 	// Este metodo es el que muestra el link vincular
 	  function vincular() {
-	    FB.api('/me', function(response) {
-	      console.log('Tu id es, ' + response.id + '.');
-	      $( "#opciones_sesion" ).html('<a href="/vincular/'+ response.id +'">Vincular</a>');
-	    });
+		FB.api('/me', function(response) {
+		  console.log('Tu id es, ' + response.id + '.');
+		  $( "#opciones_sesion" ).html('<a href="/vincular/'+ response.id +'">Vincular</a>');
+		});
 	  }
 
 
@@ -117,16 +118,188 @@
 
 	  // Este metodo es con el que se lanza el pop up para logearse o los permisos
 	  function authorizeAppInPopup() {
-	    FB.login(function(response) {
-	        if (response.authResponse) {
-	            // User authorized app
-	        } else {
-	            // User cancelled login or did not fully authorize
-	        }
-	    }, {scope: 'email, user_about_me, user_interests, publish_actions, publish_stream'});
+		FB.login(function(response) {
+			if (response.authResponse) {
+				// User authorized app
+			} else {
+				// User cancelled login or did not fully authorize
+			}
+		}, {scope: 'email, user_about_me, user_interests, publish_actions, publish_stream'});
 	}
 
 	</script>
+
+
+
+
+<script type="text/javascript">
+   $(document).ready(function(){
+
+		$(" #id_estado").on( "change", function( event ) {
+			var selectedValue = $('#id_estado').val();
+			var flickerAPI ='/ajax/selectestado/' + selectedValue;
+			var options;
+			$.getJSON( flickerAPI, function(data){
+				for (var i = 0; i < data.length; i++){
+					options += '<option value="'+data[i]["pk"]+'">' +data[i]["fields"]["nombre"] +'</option>';
+				}
+				$('#id_muicipio').html(options);
+				$("#id_muicipio option:first").attr('selected', 'selected');
+			});
+
+		});
+
+		$(" #id_muicipio").on( "change", function( event ) {
+			
+			var selectedValue = $('#id_muicipio').val();
+			var flickerAPI ='/ajax/selectlocalidad/' + selectedValue;
+			var options;
+			$.getJSON( flickerAPI, function(data){
+				for (var i = 0; i < data.length; i++){
+					options += '<option value="'+data[i]["pk"]+'">' +data[i]["fields"]["nombre"] +'</option>';
+				}
+				$('#id_localidad').html(options);
+				$("#id_localidad option:first").attr('selected', 'selected');
+			});
+
+		});
+	});
+
+	 
+
+
+</script>
+
+
+<script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k&sensor=true">
+    </script>
+
+    <script type="text/javascript">
+var map;
+var markers = [];
+var myLatlng;
+function initialize() {
+
+
+ var myLatlng = new google.maps.LatLng(19.07575444948174, -98.29949116640626);
+  var mapOptions = {
+           center: myLatlng,
+          zoom: 14,
+          panControl: false,
+          zoomControl: true,
+          mapTypeControl: false,
+          scaleControl: false,
+          streetViewControl: false,
+          overviewMapControl: true,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  map = new google.maps.Map(document.getElementById("map-empresa"),mapOptions);
+
+
+if(navigator.geolocation) {
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+    
+   
+    var hid_Latlon = document.getElementById("id_Latlng");
+     hid_Latlon.value = pos; 
+     alert(hid_Latlon.value)
+    
+      
+      map.setCenter(pos);
+    }, function() {
+
+      handleNoGeolocation(true);
+    });
+   
+        
+  } else {
+    // Browser doesn't support Geolocation
+    
+    handleNoGeolocation(false);
+  };
+  
+  
+
+
+  google.maps.event.addListener(map, 'click', function(event) {
+     deleteOverlays();
+    addMarker(event.latLng);
+  });
+}
+
+
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag) {
+  		map.setCenter(myLatlng);
+
+    var content = 'Error: The Geolocation service failed.';
+  } else {
+    var content = 'Error: Your browser doesn\'t support geolocation.';
+ 			map.setCenter(myLatlng);
+
+  }
+
+
+ 
+}
+
+// Add a marker to the map and push to the array.
+function addMarker(location) {
+
+    var lon =  location;
+   //alert(lon);
+    var hid_lon = document.getElementById("id_Latlng");
+     hid_lon.value = lon; 
+  var marker = new google.maps.Marker({
+    position: location,
+    map: map
+  });
+  markers.push(marker);
+}
+
+// Sets the map on all markers in the array.
+function setAllMap(map) {
+  for (var i = 0; i < markers.length; i++) {
+    markers[i].setMap(map);
+  }
+}
+
+// Removes the overlays from the map, but keeps them in the array.
+function clearOverlays() {
+  setAllMap(null);
+}
+
+
+
+// Deletes all markers in the array by removing references to them.
+function deleteOverlays() {
+  clearOverlays();
+  markers = [];
+}
+
+		</script>
+
+
+
+<form name="iniciarSesion" method="post" >{% csrf_token %}
+
+	<div class="actdatos">
+		div que se utiliza para actualizar los datos de las empresas
+		{{ form_actualiza.as_p }}
+		
+		
+		<viv id="mensaje_field_Es"></viv>
+	</div>
+
+	<div id="map-empresa" style="width:300px;height:300px; background-color:orange;"></div>
+	
+	<input type="submit" name="act_datos" value="Actualizar datos" id="btnActualizarDat" />
+</form>
+<button onclick="initialize()">Mostrar mapa</button>
 {% else %}
 	<!-- Si la empresa no esta activada mostramos un mensaje que necesita validar su cuenta -->
 	<h3>No has confirmado tu correo electronico, por favor revisa tu correo</h3>
@@ -144,6 +317,7 @@
 
 {% block scriptsFoot %}
 
+<div class="fot"> se supone que esto es un div que esta dentro del footer</div>
 
 {% endblock scriptsFoot %}
 

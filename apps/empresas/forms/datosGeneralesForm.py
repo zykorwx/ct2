@@ -2,6 +2,11 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+
+### Importando los modelos que voy a utilizar para hacer el formulario
+from apps.empresas.models.BDlocalidades import *
+from apps.empresas.models.empresa import Categoria
+
 import re
 
 
@@ -25,11 +30,16 @@ class RFCField(forms.CharField):
 # last_name = Nombre del encargado de la empresa
 # Para cambiar el label mostrado solo cambiar la propiedar label de cada campo
 class DatosGeneralesEmpresaForm(forms.Form):
-    giro = forms.CharField(max_length=30, label=_(u"Giro de la empresa"))
+    estado = forms.IntegerField(widget=forms.Select(choices=Estados.objects.all().values_list('id','nombre')))
+    muicipio = forms.IntegerField(widget=forms.Select(choices=""))
+    localidad = forms.IntegerField(widget=forms.Select(choices=""))
+    giro = forms.CharField(widget=forms.Select(choices=Categoria.objects.all().values_list('id','nombre').order_by('nombre')))
     telefono = forms.CharField(max_length=15, label=_(u"Telefono"))
+    direccion = forms.CharField(max_length=89, label=_(u"Direccion"))
     sitio_web = forms.URLField(label=_(u"Sitio web"))
+    Latlng = forms.CharField(widget=forms.HiddenInput())
 
-
+"""
     # Comprobamos contraseña
     def clean_password(self):
         if self.data['password'] != self.data['password2']:
@@ -40,3 +50,5 @@ class DatosGeneralesEmpresaForm(forms.Form):
     def clean(self,*args, **kwargs):
         self.cleaned_data.get('email')
         self.clean_password()
+
+"""

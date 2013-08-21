@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     
     url(r'', include('social_auth.urls')),
     url(r'', include('apps.usuarios.urls.urls')),
+    url(r'', include('apps.empresas.urls.urls')),
 
 )
 

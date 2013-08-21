@@ -9,8 +9,22 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User, Group
 from social_auth.models import UserSocialAuth
-from apps.empresas.models import Empresa, Encargados_empresas
+from apps.empresas.models import Empresa, Encargados_empresas,Categoria
 from apps.usuarios.decorators import login_empresa_required
+
+### Formulario para actualizar los datos
+from apps.empresas.forms.datosGeneralesForm import DatosGeneralesEmpresaForm
+
+### Api de Google Places.
+from googleplaces import GooglePlaces, types, lang
+
+PLACES_API_KEY = 'AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k'
+google_places = GooglePlaces(PLACES_API_KEY)
+
+
+
+### Modelos que utilizo (Froy)
+from apps.empresas.models.BDlocalidades import Localidades
 
 
 # Este index es solo para mostrar las opciones de login de la aplicacion
@@ -55,12 +69,39 @@ def verficaGrupo(usuario, nombre):
 		usuario.groups.add(aux[0])
 
 
+### Se debe verificar el seguimiento, pero eso ya cuando se vaya creadno el
+### sistema final.
 @login_empresa_required(login_url='/')
 def logeoEmpresa(request):
+	verificado = False
 	empresa = Empresa.objects.filter(empresa_user = request.user.id)
+	item_empresa = get_object_or_404(Empresa, pk=1)
 	dominio = 'http://www.' + empresa[0].email.split("@")[-1] # Obtenemos el dominio del correo de la empresa
 	encargados = Encargados_empresas.objects.filter(empresa = empresa[0].id)
-	return render_to_response('usuarios/empresa_logeado.html', {'empresa': empresa[0], 'encargados': encargados, 'dominio': dominio}, context_instance=RequestContext(request))
+	### Verifico si es un un formulario valido para actualizar los datos.
+	if request.method == "POST":
+		form = DatosGeneralesEmpresaForm(request.POST)
+		if form.is_valid():
+			local_empresa = Localidades.objects.get(pk=form.cleaned_data['localidad'])
+			giro_empresa = Categoria.objects.get(pk=form.cleaned_data['giro']) 
+			item_empresa.localidad = local_empresa
+			item_empresa.giro = giro_empresa
+			item_empresa.telefono = form.cleaned_data['telefono']
+			item_empresa.sitio_web = form.cleaned_data['sitio_web']
+			item_empresa.direccion = form.cleaned_data['direccion']
+			item_empresa.LatLng = form.cleaned_data['Latlng']
+			item_empresa.save()
+
+			
+			add_google_place("Viewor",form.cleaned_data['Latlng'], "book_store")
+			return render_to_response('usuarios/empresa_logeado.html', 
+				{'empresa': empresa[0], 'encargados': encargados, 'dominio': dominio},
+				 context_instance=RequestContext(request))
+	form_actualiza = DatosGeneralesEmpresaForm()
+	return render_to_response('usuarios/empresa_logeado.html', 
+		{'empresa': empresa[0], 'encargados': encargados, 'dominio': dominio,
+		'form_actualiza': form_actualiza},
+		 context_instance=RequestContext(request))
 
 
 # Cerrar sesion abierta (cualquiera)
@@ -119,3 +160,18 @@ def vinculaCuentaXEmpresa(request, empresa_id):
 
 
 
+def add_google_place(nombre_local="", latlon="", type_place=""):
+	try:
+		added_place = google_places.add_place(name='Mom and Pop local store',
+				lat_lng={'lat': 51.501984, 'lng': -0.141792},
+				accuracy=100,
+				types=types.TYPE_HOME_GOODS_STORE,
+				language=lang.ENGLISH_GREAT_BRITAIN)
+		print added_place.reference # The Google Places reference - Important!
+		print added_place.id
+
+		# Delete the place that you've just added.
+		google_places.delete_place(added_place.reference)
+	except:
+		# You've passed in parameter values that the Places API doesn't like..
+		print "error_detail"
