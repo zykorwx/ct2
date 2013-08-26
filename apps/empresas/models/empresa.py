@@ -45,6 +45,8 @@ class Empresa(models.Model):
 	codigo_confirmacion = models.CharField(max_length=32, blank=True)
 	total_capital =  models.DecimalField(max_digits=7, decimal_places=2,
 											default=0.0)
+	reference_place =  models.CharField(max_length=155, blank=True)
+	id_place = models.CharField(max_length=48, blank=True)
 	class Meta:
 		app_label = 'empresas'
 		verbose_name = _('Empresa')

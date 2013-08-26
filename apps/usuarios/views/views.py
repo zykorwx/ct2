@@ -17,8 +17,7 @@ from apps.empresas.forms.datosGeneralesForm import DatosGeneralesEmpresaForm
 
 ### Api de Google Places.
 from googleplaces import GooglePlaces, types, lang
-
-PLACES_API_KEY = 'AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k'
+PLACES_API_KEY = 'AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k' ### Mi clave de de consola Google
 google_places = GooglePlaces(PLACES_API_KEY)
 
 
@@ -90,10 +89,17 @@ def logeoEmpresa(request):
 			item_empresa.sitio_web = form.cleaned_data['sitio_web']
 			item_empresa.direccion = form.cleaned_data['direccion']
 			item_empresa.LatLng = form.cleaned_data['Latlng']
-			item_empresa.save()
 
+			lt = form.cleaned_data['Latlng'][1:-1]
+			l= lt.split(',')
+			aux = add_google_place("Viewor",{'lat':float(l[0]),'lng':float(l[1])}, "book_store")
+			item_empresa.id_place = aux['id']
+			item_empresa.reference_place = aux['reference']
+			item_empresa.save()
 			
-			add_google_place("Viewor",form.cleaned_data['Latlng'], "book_store")
+
+			###print empresa
+			###add_google_place("Viewor",{'lat':float(l[0]),'lng':float(l[1])}, "book_store")
 			return render_to_response('usuarios/empresa_logeado.html', 
 				{'empresa': empresa[0], 'encargados': encargados, 'dominio': dominio},
 				 context_instance=RequestContext(request))
@@ -161,17 +167,20 @@ def vinculaCuentaXEmpresa(request, empresa_id):
 
 
 def add_google_place(nombre_local="", latlon="", type_place=""):
+	print nombre_local
+	print latlon
 	try:
-		added_place = google_places.add_place(name='Mom and Pop local store',
-				lat_lng={'lat': 51.501984, 'lng': -0.141792},
-				accuracy=100,
+		print nombre_local
+		print latlon
+		added_place = google_places.add_place(name=nombre_local,
+				lat_lng=latlon,
+				accuracy=50,
 				types=types.TYPE_HOME_GOODS_STORE,
-				language=lang.ENGLISH_GREAT_BRITAIN)
-		print added_place.reference # The Google Places reference - Important!
-		print added_place.id
-
-		# Delete the place that you've just added.
-		google_places.delete_place(added_place.reference)
+				language=lang.SPANISH)
+		print added_place # The Google Places reference - Important!
+		return added_place
 	except:
 		# You've passed in parameter values that the Places API doesn't like..
 		print "error_detail"
+
+
