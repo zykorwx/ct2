@@ -56,3 +56,37 @@ def selectLocalidades(request, id_municipio):
 		print "No fue en ujax"
 		return HttpResponse('Lo sentimos No es una petición ajax')
 
+def lugares_cercanos(request,lat="",lon=""):
+	if request.is_ajax():
+
+		query_result = google_places.nearby_search
+		(
+			lat_lng ={'lat':float(lat),'lng':float(lon)}, 
+			keyword='Fish and Chips',
+			radius=10000, 
+			types=[types.TYPE_FOOD]
+		)
+"""
+
+
+estas funciones ya sirven ya se obtienene los 60 resultados que google da como maxicmo
+query_result = google_places.nearby_search(
+	lat_lng ={'lat':19.072582570780870,'lng':-98.30248832702620}, 
+	language =lang.SPANISH,
+	rankby='distance',
+	keyword='viewor'
+	)
+pageto = query_result.next_page_token
+query_result = google_places.nearby_search(
+	lat_lng ={'lat':19.072582570780870,'lng':-98.30248832702620}, 
+	language =lang.SPANISH,
+	rankby='distance',
+	keyword='viewor',
+	pagetoken = pageto
+	)
+
+query_result = google_places.get_place(reference='CkQxAAAATSSayBisoj_PmLe6CqxDax_7DM5vuLNfh4SIaGz_gyCJ1zn6PEj4s40jCQ88E2_Zf9Bb4qTtQJ_Wj9wDuCK4cxIQuNTHDg6pbrNH6UTK3nzfGRoULRvP-v-Vle84_e7muRf9PXrP7Xo')
+
+
+
+"""
