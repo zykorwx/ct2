@@ -126,6 +126,19 @@
                 $( "#opciones_sesion" ).html(html_opciones);
             }**/
         </script>
+
+
+<script type="text/javascript">
+/*  Este escrip es para mandar la posición del usuario al server y 
+obtener un jonson con todos los datos que se requieren*/
+    if(navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        }
+    }
+
+</script>
     {% endblock scriptsFoot %}
 
 
