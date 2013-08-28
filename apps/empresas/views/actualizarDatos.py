@@ -58,14 +58,13 @@ def selectLocalidades(request, id_municipio):
 
 def lugares_cercanos(request,lat="",lon=""):
 	if request.is_ajax():
+		query_result = google_places.nearby_search(
+						lat_lng ={'lat':float(lat),'lng':float(lon)}, 
+						keyword='Fish and Chips',
+						radius=10000, 
+						types=[types.TYPE_FOOD]
+					)
 
-		query_result = google_places.nearby_search
-		(
-			lat_lng ={'lat':float(lat),'lng':float(lon)}, 
-			keyword='Fish and Chips',
-			radius=10000, 
-			types=[types.TYPE_FOOD]
-		)
 """
 
 

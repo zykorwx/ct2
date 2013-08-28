@@ -1,7 +1,7 @@
 # -*- coding: utf-8 *-*
 from django.db import models
 from django.contrib.auth.models import User
-from apps.empresas.models.empresa import Empresa, Categoria, Sub_categoria
+from apps.empresas.models.empresa import Empresa, Categoria
 import os
 from django.utils.translation import ugettext_lazy as _
 
@@ -19,11 +19,26 @@ def get_image_path(promocion, filename):
 
 
 
-### Modificar el campo imagen para que acepte varias eimagenes...
 
+## Cada servicio puede tener diferentes tags que vamos a utilizar cuando se crea una promocion.
+#class Sub_categoria(models.Model):
+class Tags(models.Model):
+	nombre =models.CharField(max_length=30,
+			 verbose_name=_('Nombre del Tag'))
+	class Meta:
+		verbose_name = _('Tag')
+		verbose_name_plural = _('Tags')
+		app_label = 'promociones'
+	def __unicode__(self):
+		return '%s' %(self.nombre)
+
+
+
+### Modificar el campo imagen para que acepte varias eimagenes...
+#**************************************************
 class Promocion(models.Model):
 	empresa = models.ForeignKey(Empresa)
-	categoria = models.ManyToManyField(Sub_categoria)
+	categoria = models.ManyToManyField(Tags)
 	tipo_promocion =models.CharField(choices=tipo_promocion_choices,default='des'
 						,max_length=3,verbose_name=(u'Tipo de promocion'))
 	des_tipoPromo = models.CharField(max_length=140, blank=True,
