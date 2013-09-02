@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from apps.empresas.models.BDlocalidades import Localidades
 
 
+
 from django.utils.translation import ugettext_lazy as _
 #from django_localflavor_mx.models import MXStateField, MXZipCodeField, 
 # MXCURPField
@@ -16,7 +17,23 @@ from django.utils.translation import ugettext_lazy as _
 	
 # Metodo para  generar la ruta donde se guardaran los logos
 def get_image_path(empresa, filename):
-    return os.path.join('imagenes/empresas/'+str(empresa.id), 'logos', filename)
+	return os.path.join('imagenes/empresas/'+str(empresa.id), 'logos', filename)
+
+
+
+
+## Cada servicio puede tener diferentes tags que vamos a utilizar cuando se crea una promocion.
+#class Sub_categoria(models.Model):
+class Tags(models.Model):
+	nombre =models.CharField(max_length=30,
+			 verbose_name=_('Nombre del Tag'))
+	class Meta:
+		verbose_name = _('Tag')
+		verbose_name_plural = _('Tags')
+		app_label = 'empresas'
+	def __unicode__(self):
+		return '%s' %(self.nombre)
+
 
 
 
@@ -25,6 +42,7 @@ class Categoria(models.Model):
 	nombre_ingles =models.CharField(max_length=30, default='none',unique=True
 				 ,verbose_name=_('Categoria Ingles'))
 	nombre =models.CharField(max_length=30, verbose_name=_('Categoria'))
+	tags = models.ManyToManyField("Tags",null = True)
 	class Meta:
 		verbose_name = _('Categoria')
 		verbose_name_plural = _('Categorias')
@@ -54,7 +72,7 @@ class Empresa(models.Model):
 	codigo_confirmacion = models.CharField(max_length=32, blank=True)
 	total_capital =  models.DecimalField(max_digits=7, decimal_places=2,
 											default=0.0)
-	reference_place =  models.CharField(max_length=155, blank=True)
+	reference_place =  models.CharField(max_length=255, blank=True)
 	id_place = models.CharField(max_length=48, blank=True)
 	class Meta:
 		app_label = 'empresas'

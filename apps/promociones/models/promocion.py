@@ -1,7 +1,7 @@
 # -*- coding: utf-8 *-*
 from django.db import models
 from django.contrib.auth.models import User
-from apps.empresas.models.empresa import Empresa, Categoria
+from apps.empresas.models.empresa import Empresa, Categoria, Tags
 import os
 from django.utils.translation import ugettext_lazy as _
 
@@ -20,17 +20,7 @@ def get_image_path(promocion, filename):
 
 
 
-## Cada servicio puede tener diferentes tags que vamos a utilizar cuando se crea una promocion.
-#class Sub_categoria(models.Model):
-class Tags(models.Model):
-	nombre =models.CharField(max_length=30,
-			 verbose_name=_('Nombre del Tag'))
-	class Meta:
-		verbose_name = _('Tag')
-		verbose_name_plural = _('Tags')
-		app_label = 'promociones'
-	def __unicode__(self):
-		return '%s' %(self.nombre)
+
 
 
 

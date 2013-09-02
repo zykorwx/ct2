@@ -187,6 +187,9 @@ TWITTER_CONSUMER_SECRET      = 'eGrPixqmidtZpLCzNdUB96zVht8xrRLoiNLnJ2aZsbQ'
 FACEBOOK_APP_ID              = '188980267933208'
 FACEBOOK_API_SECRET          = '5bc9b759bf791f7eb213e49d2d4ab28d'
 
+""" ***  key(consola) para la api de Google Places *** """
+API_KEY_GOOGLE_PLACES        = 'AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k'
+
 # Las siguietes 3 lineas sirven para configurar el despues del login, la url de login, y el error
 LOGIN_URL          = '/login-form/'
 LOGIN_REDIRECT_URL = '/'

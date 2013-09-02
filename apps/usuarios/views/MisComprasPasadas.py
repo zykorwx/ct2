@@ -1,4 +1,4 @@
-from apps.usuarios.models.MisCompras import ComprasPasadas
+from apps.usuarios.models.MisCompras import ComprasPasadas,ComprasEmpresaFavorita
 
 ### esta funcion la utilizo unicamente para modificar el campo cantidad,
 ### por cada vez que el usuario compre un producto el campo se va a modificar
