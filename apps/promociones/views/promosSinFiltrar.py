@@ -47,11 +47,14 @@ def devolverCategorias(usuario=None):
 	if tags:
 		ids_tag_nom =[]
 		ids_tag =[]
+		contador = 1
 		for t in tags:
-			ide_tag = {'position':t.id,'id_tag':t.tag.id}
+			###ide_tag = {'position':contador,'id_tag':t.tag.id}
+			contador += 1
 			ids_tag_nom.append(t.tag)
-			ids_tag.append(ide_tag)
-			print "esto es lo que guardo en los tags %s" %(ids_tag_nom)
+			ids_tag.append(t.tag.id)
+		print ids_tag
+			###print "esto es lo que guardo en los tags %s" %(ids_tag_nom)
 		cat = Categoria.objects.values('nombre_ingles').filter(
 				tags__in=ids_tag_nom).annotate(dcount=Count('nombre_ingles'))
 		if cat:
@@ -82,23 +85,24 @@ def devolverCategorias(usuario=None):
 	2) Empresas que coinciden por lo menos con un
 		type (tipo de lugar) que ha comprado el usuario
 """
+### en mi pc de escritorio hayq ue cambiar google_places.query(
+### por  por la siguiente linea   ::::::: google_places.nearby_search(
 def regresaPlacesDeInteres(usuario=None,latlon={}):
 	ids_t = None
 	types_g = None
 	ids_t,types_g = devolverCategorias(usuario)
 	if ids_t and types_g:
-		try:
-			query_result = google_places.nearby_search(
-						lat_lng=latlon, 
-						types=types_g,
-						language=lang.SPANISH,
-						rankby=ranking.DISTANCE
-						)
-			ides_t_types_place = {"ids_t":ids_t,"types_g":types_g}
-			return (ides_t_types_place,query_result)
-		except: 
-			query_result= " entro en la exepcion None"
-			return (ids_t,query_result)
+		query_result = google_places.query(
+					lat_lng=latlon, 
+					types=types_g,
+					language=lang.SPANISH,
+					rankby=ranking.DISTANCE
+					)
+		ides_t_types_place = {"ids_t":ids_t,"types_g":types_g}
+		return (ides_t_types_place,query_result)
+	
+		query_result= " entro en la exepcion None"
+		return (ids_t,query_result)
 	else:
 		return(None,None)
 
@@ -117,26 +121,45 @@ def regresaPlacesDeInteres(usuario=None,latlon={}):
 def verificaEmpresaCliente(usuario=None,latlon={}):
 	ides_t_types_place,empresas = regresaPlacesDeInteres(
 									usuario,latlon)
+
 	if ides_t_types_place and empresas:
 		id_empr = []
 		for empr in empresas.places:
 			id_empr.append(empr.id)
 		if len(id_empr) > 0:
-			print id_empr
+			###print id_empr
 			empr_clientes = Empresa.objects.filter(
 							id_place__in=id_empr)
-		return (ides_t_types_place,empr_clientes)
+			dicc_posision = {}
+			for inde in empr_clientes:
+				pos = id_empr.index(inde.id_place)
+				dicc_posision[inde.id] = pos
+
+			dic_emp_position = {"empresa" : empr_clientes, "position" : dicc_posision}
+
+		return (ides_t_types_place,dic_emp_position)
 
 	else:
-		return (ides_t_types_place,empresas)
+		return (None,None)
 
+
+
+"""
+	Esta es la funcion principal, es la que se va a invocar en las vistas para que regrese todo 
+	el contenido. regresa una lista de diccionarios y cada diccionario trae 
+	1)n objeto de tipo promocion, ya filtrada por los gustos del usuario, que la promo-
+	  ción este activa (por las fechas de pub) que la empresa este activa
+	2) posicion en la que debe ir segun la distancia
+	3) posición en la que debe ir según los gustos del usuario.
+	4) tag de la promocion para poder organizar rapidamente las promos por tag.
+"""
 
 def promocionesGustosClientes(usuario=None,latlon={}):
 	ides_t_types_place,empresas = verificaEmpresaCliente(
 									usuario,latlon)
 	if ides_t_types_place and empresas:
 		id_empr = []
-		for ids in empresas:
+		for ids in empresas['empresa']:
 			id_empr.append(ids.id)
 		if len(id_empr) > 0:
 			promos = Promocion.objects.filter(
@@ -145,13 +168,45 @@ def promocionesGustosClientes(usuario=None,latlon={}):
 					fecha_publicacion__lte = hoy,
 					fecha_termino__gte=hoy)
 		if promos:
+			promos_ordenadas = []
+			###print ides_t_types_place['ids_t']
 			for pr in promos:
 				dir_cat = []
+				dis = empresas['position'][pr.empresa.id]
 				for cat in pr.categoria.all():
-					dir_cat.append(cat.id)
+					aux1 = verificaPosisionTag(ides_t_types_place['ids_t'],cat.id)
+					print "esto trae aux %s" % (aux1)
+					if aux1:
+						pos = {'posision':aux1,'tag_nom':cat.nombre,'tag_id': cat.id}
+						###print pos
+						dir_cat.append(pos)
+					if len(dir_cat) > 0 and aux1:
+						if dir_cat[0]['posision'] > aux1:
+							dir_cat[0]['posision'] = aux1
+							dir_cat[0]['tag_nom'] = cat.nombre
+							dir_cat[0]['tag_id'] = cat.id
+				print dir_cat
+					
 
-				print "nombre de la promo: %s, ys su categoria es %s" %(pr.titulo_promocion, dir_cat)
-				print ides_t_types_place['ids_t']
+				env_promos = {'posision_gusto':dir_cat[0]['posision'],'promo': pr,'tag' : dir_cat[0]['tag_nom'],'lugar_empresa':dis}
+				promos_ordenadas.append(env_promos)
+
+
+
+				###print "nombre de la promo: %s, ys su categoria es %s" %(pr.titulo_promocion, dir_cat)
+				###print ides_t_types_place['ids_t']
+			return promos_ordenadas
+
+
+def verificaPosisionTag(tags=[],id_tag = -1):
+	
+	
+	if id_tag in tags:
+		print "la  categoria %s la encontro  en el indice numero  %s" %(id_tag, tags.index(id_tag) + 1) 
+		return tags.index(id_tag) + 1
+	else:
+		return None
+
 				 
 
 #def retornaPosicionTag():
