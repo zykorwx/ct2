@@ -42,7 +42,7 @@ def ContartagsDeCompras(usuario = None):
 	posteriormente en la llamada a la api de Google
 	Places 
 """
-def devolverCategorias(usuario=None):
+def devolverCategorias(usuario=None,gustos= True):
 	tags = ContartagsDeCompras(usuario)
 	if tags:
 		ids_tag_nom =[]
@@ -55,8 +55,14 @@ def devolverCategorias(usuario=None):
 			ids_tag.append(t.tag.id)
 		print ids_tag
 			###print "esto es lo que guardo en los tags %s" %(ids_tag_nom)
-		cat = Categoria.objects.values('nombre_ingles').filter(
+		if gustos:
+			cat = Categoria.objects.values('nombre_ingles').filter(
 				tags__in=ids_tag_nom).annotate(dcount=Count('nombre_ingles'))
+		else:
+			cat = Categoria.objects.values(
+				'nombre_ingles').all().exclude(
+				tags__in=ids_tag_nom).annotate(
+				cantidad=Count('nombre_ingles'))
 		if cat:
 			types_place = []
 			for c in cat:
@@ -87,17 +93,27 @@ def devolverCategorias(usuario=None):
 """
 ### en mi pc de escritorio hayq ue cambiar google_places.query(
 ### por  por la siguiente linea   ::::::: google_places.nearby_search(
-def regresaPlacesDeInteres(usuario=None,latlon={}):
+def regresaPlacesDeInteres(usuario=None,latlon={}, dis_metros=None, gustos=True):
 	ids_t = None
 	types_g = None
-	ids_t,types_g = devolverCategorias(usuario)
+	ids_t,types_g = devolverCategorias(usuario,gustos)
+	print " no se que paso peroe esta antes del google places query"
+
 	if ids_t and types_g:
-		query_result = google_places.query(
-					lat_lng=latlon, 
-					types=types_g,
-					language=lang.SPANISH,
-					rankby=ranking.DISTANCE
-					)
+		if dis_metros:
+			query_result = google_places.query(
+							lat_lng=latlon,
+							types=types_g,
+							language=lang.SPANISH,
+							radius=dis_metros)
+		else:
+			query_result = google_places.query(
+							lat_lng=latlon,
+							types=types_g,
+							language=lang.SPANISH,
+							rankby= ranking.DISTANCE)
+		
+		print query_result
 		ides_t_types_place = {"ids_t":ids_t,"types_g":types_g}
 		return (ides_t_types_place,query_result)
 	
@@ -118,9 +134,9 @@ def regresaPlacesDeInteres(usuario=None,latlon={}):
 	2) Empresas que son nuestros clientes y que le pueden
 		gustar al usuario
 """
-def verificaEmpresaCliente(usuario=None,latlon={}):
+def verificaEmpresaCliente(usuario=None,latlon={}, dis_metros=None, gustos=True):
 	ides_t_types_place,empresas = regresaPlacesDeInteres(
-									usuario,latlon)
+									usuario,latlon, dis_metros,gustos)
 
 	if ides_t_types_place and empresas:
 		id_empr = []
@@ -154,9 +170,9 @@ def verificaEmpresaCliente(usuario=None,latlon={}):
 	4) tag de la promocion para poder organizar rapidamente las promos por tag.
 """
 
-def promocionesGustosClientes(usuario=None,latlon={}):
+def promocionesGustosClientes(usuario=None,latlon={}, dis_metros=None, gustos=True):
 	ides_t_types_place,empresas = verificaEmpresaCliente(
-									usuario,latlon)
+									usuario,latlon,dis_metros,gustos)
 	if ides_t_types_place and empresas:
 		id_empr = []
 		for ids in empresas['empresa']:
