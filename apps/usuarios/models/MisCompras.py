@@ -23,6 +23,7 @@ class ComprasEmpresaFavorita(models.Model):
 	us = models.ForeignKey(User)
 	empresa = models.ForeignKey(Empresa)
 	cantidad = models.PositiveSmallIntegerField()
+	ultimaCompra = models.DateField()
 
 	class Meta:
 		app_label = 'usuarios'

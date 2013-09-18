@@ -1,4 +1,6 @@
 # -*- coding: utf-8 *-*
+
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
@@ -17,9 +19,7 @@ tarjeta_es = [('1','Disponible'),
 
 
 class Tarjeta(models.Model):
-	dni = models.CharField(max_length=20)
-	tipo_tarjera = models.CharField(max_length=2,choices=tipo_tarjeta,
-						default='pr')
+	dni = models.CharField(max_length=10)
 	estado = models.CharField(max_length=1,choices=tarjeta_es)
 	class Meta:
 		verbose_name = _('Tarjeta')
@@ -43,7 +43,7 @@ class userTarjeta(models.Model):
 	
 	
 
-User.add_to_class('id_tarjeta',models.ManyToManyField(Tarjeta,through=userTarjeta))
+
 
 
 
@@ -55,8 +55,6 @@ def get_image_path(perfil, filename):
 class Perfil(models.Model):
 	user = models.ForeignKey(User, unique=True)
 	avatar = models.ImageField(upload_to=get_image_path, verbose_name='avatar')
-	tipo_user_tarjera = models.CharField(max_length=2,choices=tipo_tarjeta,
-						default='pr')
 	class Meta:
 		verbose_name = _('Perfil')
 		verbose_name_plural = _('Perfiles')
@@ -64,8 +62,6 @@ class Perfil(models.Model):
 	def __unicode__(self):
 		return '%s' %(self.tipo_user_tarjera)
 
-
-	
 
 
 

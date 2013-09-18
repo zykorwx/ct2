@@ -54,6 +54,7 @@ class Categoria(models.Model):
 
 ### Falta agregar el campo para logo de la empresa 
 class Empresa(models.Model):
+	matriz = models.ForeignKey('self',null=True)
 	empresa_user = models.ForeignKey(User) ## Verificar el por que de este campo
 	nombre = models.CharField(max_length=50, 
 				verbose_name=_('Nombre de la empresa'))
