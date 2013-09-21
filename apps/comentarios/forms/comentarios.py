@@ -15,6 +15,4 @@ from apps.comentarios.models.comentario import Comentario_promocion
 class ComentarPromocionForm(forms.ModelForm):
     class Meta:
         model = Comentario_promocion
-        exclude = {'usuario','promocion'}
-        fields = {'titulo','comentario'}
     

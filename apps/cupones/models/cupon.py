@@ -13,7 +13,7 @@ class Cupon(models.Model):
 	num_folio = models.CharField(max_length=10, 
 					verbose_name=_('Codigo unico de folio'))
 	usuario = models.ForeignKey(User)
-	fecha_solicitud = models.DateTimeField(auto_now=True)
+	fecha_solicitud = models.DateTimeField(auto_now_add=True)
 	fecha_canjeado = models.DateField(blank=True, null=True)
 	tipo_user_tarjeta = models.CharField(max_length=13)
 	empleado_atend = models.CharField(max_length=10,blank=True)

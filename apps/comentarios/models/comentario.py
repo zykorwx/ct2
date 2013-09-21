@@ -2,7 +2,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from apps.promociones.models.promocion import Promocion
-from django.contrib.auth.models import User
 
 
 from django.utils.translation import ugettext_lazy as _
@@ -10,30 +9,13 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class Comentario_promocion(models.Model):
-	usuario = models.ForeignKey(User)
 	promocion = models.ForeignKey(Promocion)
-	titulo =  models.CharField(max_length=20,verbose_name=_('Resumen'),
-				default='')
-	comentario = models.TextField(verbose_name=_('Comentario'))
-	fecha = models.DateTimeField(auto_now=True)
+	comentarios = models.TextField(verbose_name=_('Comentario'), blank=True, null=True)
+
 	class Meta:
 		verbose_name = _('Comentario de la promocion')
 		verbose_name_plural = _('Comentarios de las promociones')
 		app_label='comentarios'
 	def __unicode__(self):
-		return '%s' %(self.comentario)
-
-
-class Calificacion_comentario(models.Model):
-	comentario = models.ForeignKey(Comentario_promocion)
-	usuario = models.ForeignKey(User)
-	calificacion =  models.PositiveSmallIntegerField(
-						verbose_name=(u'Calificacion'))
-
-	class Meta:
-		verbose_name = _('Calificar comentario')
-		verbose_name_plural = _('Ingresar calificacion de comentarios')
-		app_label= 'comentarios'
-	def __unicode__(self):
-		return '%s' %(self.calificacion)
+		return '%s' %(self.comentarios)
 	

@@ -11,22 +11,10 @@ class Migration(SchemaMigration):
         # Adding model 'Comentario_promocion'
         db.create_table(u'comentarios_comentario_promocion', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('usuario', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
             ('promocion', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['promociones.Promocion'])),
-            ('titulo', self.gf('django.db.models.fields.CharField')(default='', max_length=20)),
-            ('comentario', self.gf('django.db.models.fields.TextField')()),
-            ('fecha', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('comentarios', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
         ))
         db.send_create_signal('comentarios', ['Comentario_promocion'])
-
-        # Adding model 'Calificacion_comentario'
-        db.create_table(u'comentarios_calificacion_comentario', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('comentario', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['comentarios.Comentario_promocion'])),
-            ('usuario', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('calificacion', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
-        ))
-        db.send_create_signal('comentarios', ['Calificacion_comentario'])
 
         # Adding model 'Preguntas_promocion'
         db.create_table(u'comentarios_preguntas_promocion', (
@@ -49,9 +37,6 @@ class Migration(SchemaMigration):
     def backwards(self, orm):
         # Deleting model 'Comentario_promocion'
         db.delete_table(u'comentarios_comentario_promocion')
-
-        # Deleting model 'Calificacion_comentario'
-        db.delete_table(u'comentarios_calificacion_comentario')
 
         # Deleting model 'Preguntas_promocion'
         db.delete_table(u'comentarios_preguntas_promocion')
@@ -81,7 +66,6 @@ class Migration(SchemaMigration):
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'id_tarjeta': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['usuarios.Tarjeta']", 'through': "orm['usuarios.userTarjeta']", 'symmetrical': 'False'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -90,13 +74,6 @@ class Migration(SchemaMigration):
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'comentarios.calificacion_comentario': {
-            'Meta': {'object_name': 'Calificacion_comentario'},
-            'calificacion': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
-            'comentario': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['comentarios.Comentario_promocion']"}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'usuario': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
         'comentarios.calificacion_promocion': {
             'Meta': {'object_name': 'Calificacion_promocion'},
@@ -108,12 +85,9 @@ class Migration(SchemaMigration):
         },
         'comentarios.comentario_promocion': {
             'Meta': {'object_name': 'Comentario_promocion'},
-            'comentario': ('django.db.models.fields.TextField', [], {}),
-            'fecha': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'comentarios': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'promocion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['promociones.Promocion']"}),
-            'titulo': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '20'}),
-            'usuario': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+            'promocion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['promociones.Promocion']"})
         },
         'comentarios.preguntas_promocion': {
             'Meta': {'object_name': 'Preguntas_promocion'},
@@ -130,44 +104,64 @@ class Migration(SchemaMigration):
         'empresas.categoria': {
             'Meta': {'object_name': 'Categoria'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '30'})
+            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '30'}),
+            'nombre_ingles': ('django.db.models.fields.CharField', [], {'default': "'none'", 'unique': 'True', 'max_length': '30'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['empresas.Tags']", 'null': 'True', 'symmetrical': 'False'})
         },
         'empresas.empresa': {
+            'LatLng': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
             'Meta': {'object_name': 'Empresa'},
-            'colonia': ('django.db.models.fields.CharField', [], {'max_length': '70'}),
+            'codigo_confirmacion': ('django.db.models.fields.CharField', [], {'max_length': '32', 'blank': 'True'}),
             'direccion': ('django.db.models.fields.CharField', [], {'max_length': '90'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
-            'encargado': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'empresa_user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
             'fecha_alta': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'giro': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Categoria']"}),
+            'giro': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Categoria']", 'null': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'latitud_mapa': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'longitud_mapa': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
-            'municipio': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Municipio']"}),
-            'nombre': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'}),
-            'num_exterior': ('django.db.models.fields.CharField', [], {'max_length': '8'}),
-            'num_interior': ('django.db.models.fields.CharField', [], {'max_length': '8', 'blank': 'True'}),
-            'rfc': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
+            'id_place': ('django.db.models.fields.CharField', [], {'max_length': '48', 'blank': 'True'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'localidad': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Localidades']", 'null': 'True'}),
+            'matriz': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Empresa']", 'null': 'True'}),
+            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'reference_place': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
+            'rfc': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '15'}),
             'sitio_web': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'telefono': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
             'total_capital': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '7', 'decimal_places': '2'})
         },
-        'empresas.municipio': {
-            'Meta': {'object_name': 'Municipio'},
-            'estado': ('django.db.models.fields.CharField', [], {'default': "'PUE'", 'max_length': '3'}),
+        'empresas.estados': {
+            'Meta': {'object_name': 'Estados'},
+            'abrev': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
+            'clave': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '60'})
+            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '45'})
         },
-        'empresas.sub_categoria': {
-            'Categoria': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Categoria']"}),
-            'Meta': {'object_name': 'Sub_categoria'},
+        'empresas.localidades': {
+            'Meta': {'object_name': 'Localidades'},
+            'altitud': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
+            'clave': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'latitud': ('django.db.models.fields.CharField', [], {'max_length': '6'}),
+            'longitud': ('django.db.models.fields.CharField', [], {'max_length': '7'}),
+            'municipio': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Municipios']"}),
+            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '110'})
+        },
+        'empresas.municipios': {
+            'Meta': {'object_name': 'Municipios'},
+            'clave': ('django.db.models.fields.CharField', [], {'max_length': '3'}),
+            'estado': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Estados']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'nombre': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'sigla': ('django.db.models.fields.CharField', [], {'max_length': '4'})
+        },
+        'empresas.tags': {
+            'Meta': {'object_name': 'Tags'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'nombre': ('django.db.models.fields.CharField', [], {'max_length': '30'})
         },
         'promociones.promocion': {
             'Meta': {'object_name': 'Promocion'},
-            'categoria': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['empresas.Sub_categoria']", 'symmetrical': 'False'}),
+            'categoria': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['empresas.Tags']", 'symmetrical': 'False'}),
             'des_tipoPromo': ('django.db.models.fields.CharField', [], {'max_length': '140', 'blank': 'True'}),
             'descripcion': ('django.db.models.fields.CharField', [], {'max_length': '140'}),
             'descuento': ('django.db.models.fields.PositiveSmallIntegerField', [], {'default': '5'}),
@@ -180,23 +174,8 @@ class Migration(SchemaMigration):
             'imagen': ('django.db.models.fields.files.ImageField', [], {'max_length': '100'}),
             'precio_total': ('django.db.models.fields.DecimalField', [], {'max_digits': '6', 'decimal_places': '2'}),
             'tipo_promocion': ('django.db.models.fields.CharField', [], {'default': "'des'", 'max_length': '3'}),
+            'tiposDescuentos': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
             'titulo_promocion': ('django.db.models.fields.CharField', [], {'max_length': '30'})
-        },
-        'usuarios.tarjeta': {
-            'Meta': {'object_name': 'Tarjeta'},
-            'dni': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'estado': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'tipo_tarjera': ('django.db.models.fields.CharField', [], {'default': "'pr'", 'max_length': '2'})
-        },
-        'usuarios.usertarjeta': {
-            'Meta': {'object_name': 'userTarjeta'},
-            'estado': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'fecha_alta': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'fecha_baja': ('django.db.models.fields.DateTimeField', [], {'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'tarjeta': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['usuarios.Tarjeta']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         }
     }
 

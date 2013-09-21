@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Probando comentarios</title>
+</head>
+<body>
+  <p>Aqui no aparecera nada</p>
+  <div class="comentarios"></div>
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script type="text/javascript">
+
+function agregaComentario(){
+      $.get(
+      "/agregaComentario",
+      {id_promocion: 2, titulo: "Que buena promocion", comentario: "'loco'"},
+      function(data){ 
+          console.log(data);
+          //eliminaComentario();
+          //modificarComentario();
+          //calificarComentario();
+      },
+      "json"
+    );
+}
+
+function modificarComentario(){
+      $.get(
+      "/modificarComentario",
+      {id_promocion: 2, titulo: "Que buena promocion", comentario: "'loco modificado'", index: 0},
+      function(data){ 
+          console.log(data);
+      },
+      "json"
+    );
+}
+
+function eliminaComentario(){
+      $.get(
+      "/eliminaComentario",
+      {id_promocion: 2, index: 0},
+      function(data){ 
+          console.log(data);
+      },
+      "json"
+    );
+}
+
+function calificarComentario(){
+      $.get(
+      "/calificarComentario",
+      {id_promocion: 2, index: 0, calificacion: 3},
+      function(data){ 
+          console.log(data);
+      },
+      "json"
+    );
+}
+
+function leerComentarios(){
+      $.get(
+      "/leerComentarios",
+      {id_promocion: 2},
+      function(data){ 
+          console.log(data.comentarios);
+          $(".comentarios").html("<p>hola</p>");
+      },
+      "json"
+    );
+}
+
+$(document).ready(function(){
+  leerComentarios();
+  //agregaComentario();
+
+});
+
+  </script>
+</body>
+</html>
