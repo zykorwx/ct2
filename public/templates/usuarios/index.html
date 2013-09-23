@@ -72,7 +72,7 @@
              Estas lineas son meramente informativas y su comportamiento debe ser cambiado-->
         {% if  encargado %}
             {% for lista in encargado %}    
-            <p>Eres encargado de: {{ lista.empresa.nombre }}</p>
+                <p>Eres encargado de: {{ lista.empresa.nombre }}</p>
             {% endfor %}
         {% endif %}
     {% endblock contenedorCuerpo %}
