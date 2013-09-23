@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^vincular/(?P<facebook_uid>\d+)$', 'apps.usuarios.views.vinculaCuentaXFacebook'),
     url(r'^vinculaCuentaXEmpresa/(?P<empresa_id>\d+)$', 'apps.usuarios.views.vinculaCuentaXEmpresa'),
 	url(r'^confirm/(?P<empresa_id>\d+)/(?P<codigo>[\w]{32})/$', 'apps.usuarios.views.confirm', name='user_confirm'),
+    url(r'^reenviaCorreoConfirmacion/(?P<empresa_id>\d+)$', 'apps.usuarios.views.reenviaCorreoConfirmacion'),
 )

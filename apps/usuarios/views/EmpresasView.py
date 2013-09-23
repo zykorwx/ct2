@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from apps.usuarios.forms import RegistroEmpresaForm
 from apps.empresas.models import Empresa
 from django.core.mail import EmailMultiAlternatives
+from django.db import DatabaseError, IntegrityError
 # Este es un helper creado en la vista de esta aplicacion
 from views import verficaGrupo
 import random
@@ -49,8 +50,11 @@ def nuevaEmpresaView(request):
 
 
 def enviaCorreoConfirmacion(empresa):
-	codigo = ''.join(random.choice(string.letters) for i in xrange(32))
-	empresa.codigo_confirmacion = codigo
+	if (empresa.codigo_confirmacion == None or empresa.codigo_confirmacion == ""):
+		codigo = ''.join(random.choice(string.letters) for i in xrange(32))
+		empresa.codigo_confirmacion = codigo
+	else: 
+		codigo = empresa.codigo_confirmacion
 	empresa.is_active = False
 	empresa.save()
 	titulo = 'Correo de confirmación Filper'
@@ -60,6 +64,23 @@ def enviaCorreoConfirmacion(empresa):
 	msg = EmailMultiAlternatives(titulo, texto_contenido, 'contacto@filper.com', [empresa.email])
 	msg.attach_alternative(html_contenido, "text/html")
 	msg.send()
+
+
+
+def reenviaCorreoConfirmacion(request, empresa_id):
+	if request.user.is_authenticated():
+		try:
+			empresa = Empresa.objects.get(pk=empresa_id)
+			enviaCorreoConfirmacion(empresa)
+			return redirect('/empresa')
+		except DatabaseError as e:
+			return HttpResponse(json.dumps({"error": "database error"}), content_type="application/json")					
+		except IntegrityError as e:
+			return HttpResponse(json.dumps({"error": "integridad"}), content_type="application/json")	
+		except Comentario_promocion.DoesNotExist:
+			return HttpResponse(json.dumps({"error": "Sin resultados"}), content_type="application/json")	
+	else:
+		return redirect('/')
 
 
 def confirm(request, empresa_id, codigo):
