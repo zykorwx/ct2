@@ -302,8 +302,8 @@ function deleteOverlays() {
 <button onclick="initialize()">Mostrar mapa</button>
 {% else %}
 	<!-- Si la empresa no esta activada mostramos un mensaje que necesita validar su cuenta -->
-	<h3>No has confirmado tu correo electronico, por favor revisa tu correo</h3>
-	<a href='{{ dominio }}'> Ir a confirmar tu correo</a>
+	<h3>No has confirmado tu correo electronico, por favor revisa tu correo <a href='{{ dominio }}'> Ir a confirmar tu correo</a></h3>
+	<p>Si no te ha llegado el correo de confirmacion has click  <a href='/reenviaCorreoConfirmacion/{{ empresa.id }}'> aqui para enviar otro correo</a></p>
 
 
 {% endif %}
