@@ -200,7 +200,7 @@ SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
 SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
 SOCIAL_AUTH_BACKEND_ERROR_URL = '/'
 
-FACEBOOK_EXTENDED_PERMISSIONS = ['email', 'user_about_me']
+FACEBOOK_EXTENDED_PERMISSIONS = ['email', 'user_about_me', 'user_location', 'user_photos', 'publish_actions']
 
 FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'es_LA'}
 
