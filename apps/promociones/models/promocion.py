@@ -48,7 +48,7 @@ class Promocion(models.Model):
 						verbose_name=_(u'Precio'))
 	descuento = models.PositiveSmallIntegerField(default=5,
 				verbose_name=u'Porcentaje de descuento')
-	tiposDescuentos = models.CharField(max_length=100,blank= True)
+	tiposDescuentos = models.CharField(max_length=110,blank= True)
  	class Meta:
 		verbose_name = _('Promocion')
 		verbose_name_plural = _('Promociones')
