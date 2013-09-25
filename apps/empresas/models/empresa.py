@@ -73,6 +73,7 @@ class Empresa(models.Model):
 	codigo_confirmacion = models.CharField(max_length=32, blank=True)
 	total_capital =  models.DecimalField(max_digits=7, decimal_places=2,
 											default=0.0)
+	calificacion = models.CharField(max_length=40,blank=True)
 	reference_place =  models.CharField(max_length=255, blank=True)
 	id_place = models.CharField(max_length=48, blank=True)
 	class Meta:
@@ -93,6 +94,8 @@ class Encargados_empresas(models.Model):
 		app_label = 'empresas'
 		verbose_name = _('Encargado_empresa')
 		verbose_name_plural = _('Encargados_empresas')
+
+
 
 
 

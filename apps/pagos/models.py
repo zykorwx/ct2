@@ -47,7 +47,7 @@ class cobroCuponComision(models.Model):
 		verbose_name_plural = _('Pago de cupones')
 		app_label= 'pagos'
 	def __unicode__(self):
-		return '%s' %(self.num_folio)
+		return '%s' %(self.cantidad)
 
 
 

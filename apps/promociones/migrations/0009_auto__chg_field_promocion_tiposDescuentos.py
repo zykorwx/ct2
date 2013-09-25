@@ -8,43 +8,14 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Comentario_promocion'
-        db.create_table(u'comentarios_comentario_promocion', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('promocion', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['promociones.Promocion'])),
-            ('comentarios', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
-        ))
-        db.send_create_signal('comentarios', ['Comentario_promocion'])
 
-        # Adding model 'Preguntas_promocion'
-        db.create_table(u'comentarios_preguntas_promocion', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('pregunta', self.gf('django.db.models.fields.CharField')(max_length=45)),
-            ('categoria', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['empresas.Categoria'], null=True)),
-        ))
-        db.send_create_signal('comentarios', ['Preguntas_promocion'])
-
-        # Adding model 'Calificacion_promocion'
-        db.create_table(u'comentarios_calificacion_promocion', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('promocion', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['promociones.Promocion'])),
-            ('pregunta', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['comentarios.Preguntas_promocion'])),
-            ('usuario', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
-            ('calificacion', self.gf('django.db.models.fields.PositiveSmallIntegerField')()),
-        ))
-        db.send_create_signal('comentarios', ['Calificacion_promocion'])
-
+        # Changing field 'Promocion.tiposDescuentos'
+        db.alter_column(u'promociones_promocion', 'tiposDescuentos', self.gf('django.db.models.fields.CharField')(max_length=110))
 
     def backwards(self, orm):
-        # Deleting model 'Comentario_promocion'
-        db.delete_table(u'comentarios_comentario_promocion')
 
-        # Deleting model 'Preguntas_promocion'
-        db.delete_table(u'comentarios_preguntas_promocion')
-
-        # Deleting model 'Calificacion_promocion'
-        db.delete_table(u'comentarios_calificacion_promocion')
-
+        # Changing field 'Promocion.tiposDescuentos'
+        db.alter_column(u'promociones_promocion', 'tiposDescuentos', self.gf('django.db.models.fields.CharField')(max_length=100))
 
     models = {
         u'auth.group': {
@@ -76,26 +47,6 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
-        'comentarios.calificacion_promocion': {
-            'Meta': {'object_name': 'Calificacion_promocion'},
-            'calificacion': ('django.db.models.fields.PositiveSmallIntegerField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'pregunta': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['comentarios.Preguntas_promocion']"}),
-            'promocion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['promociones.Promocion']"}),
-            'usuario': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
-        },
-        'comentarios.comentario_promocion': {
-            'Meta': {'object_name': 'Comentario_promocion'},
-            'comentarios': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'promocion': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['promociones.Promocion']"})
-        },
-        'comentarios.preguntas_promocion': {
-            'Meta': {'object_name': 'Preguntas_promocion'},
-            'categoria': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['empresas.Categoria']", 'null': 'True'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'pregunta': ('django.db.models.fields.CharField', [], {'max_length': '45'})
-        },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -113,7 +64,6 @@ class Migration(SchemaMigration):
         'empresas.empresa': {
             'LatLng': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'}),
             'Meta': {'object_name': 'Empresa'},
-            'calificacion': ('django.db.models.fields.CharField', [], {'max_length': '40', 'blank': 'True'}),
             'codigo_confirmacion': ('django.db.models.fields.CharField', [], {'max_length': '32', 'blank': 'True'}),
             'direccion': ('django.db.models.fields.CharField', [], {'max_length': '90'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'null': 'True', 'blank': 'True'}),
@@ -182,4 +132,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['comentarios']
+    complete_apps = ['promociones']
