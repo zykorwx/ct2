@@ -1,3 +1,4 @@
+#encoding:utf-8
 from apps.usuarios.models.MisCompras import ComprasPasadas,ComprasEmpresaFavorita
 
 ### esta funcion la utilizo unicamente para modificar el campo cantidad,
