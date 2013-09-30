@@ -24,7 +24,7 @@ DATABASES = {
         'NAME': 'db_clicktotal',                      # Or path to database file if using sqlite3.
         'USER': 'viewor',                      # Not used with sqlite3.
         'PASSWORD': 'viewor_12',                  # Not used with sqlite3.
-        'HOST': '198.199.120.36',                      # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -132,7 +132,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'social_auth',
+    'social.apps.django_app.default',
     'south',
     'imagekit',
     'apps.usuarios',
@@ -176,35 +176,98 @@ LOGGING = {
 }
 
 
+
+TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.core.context_processors.tz",
+    "social.apps.django_app.context_processors.backends",
+    "social.apps.django_app.context_processors.login_redirect",
+    "django.contrib.messages.context_processors.messages"
+)
+
+
+
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.facebook.FacebookBackend',
+    'social.backends.twitter.TwitterOAuth',
+    'social.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
 
-TWITTER_CONSUMER_KEY         = 'BRdqcpPEe5C9NZZ7ZEZ05Q'
-TWITTER_CONSUMER_SECRET      = 'eGrPixqmidtZpLCzNdUB96zVht8xrRLoiNLnJ2aZsbQ'
-FACEBOOK_APP_ID              = '188980267933208'
-FACEBOOK_API_SECRET          = '5bc9b759bf791f7eb213e49d2d4ab28d'
+#Twitter
+SOCIAL_AUTH_TWITTER_KEY = 'BRdqcpPEe5C9NZZ7ZEZ05Q'
+SOCIAL_AUTH_TWITTER_SECRET = 'eGrPixqmidtZpLCzNdUB96zVht8xrRLoiNLnJ2aZsbQ'
+# Facebook
+SOCIAL_AUTH_FACEBOOK_KEY = '188980267933208'
+SOCIAL_AUTH_FACEBOOK_SECRET = '5bc9b759bf791f7eb213e49d2d4ab28d'
 
 """ ***  key(consola) para la api de Google Places *** """
 API_KEY_GOOGLE_PLACES        = 'AIzaSyCy1NFjXXz9R2VV9vaZ0VQVKolvKyazR8k'
 
 # Las siguietes 3 lineas sirven para configurar el despues del login, la url de login, y el error
-LOGIN_URL          = '/login-form/'
-LOGIN_REDIRECT_URL = '/'
-LOGIN_ERROR_URL    = '/login-error/'
+FACEBOOK_SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+RAISE_EXCEPTIONS = True
+DEBUG = True
 
+# rutas python-social-auth
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
+SOCIAL_AUTH_LOGIN_URL = '/'
+# Este campo permite redirigir a los nuevos usuarios -- SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/new-users-redirect-url/'
+SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = '/'
 
-SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
-SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
-SOCIAL_AUTH_BACKEND_ERROR_URL = '/'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email',
+    'user_about_me',
+    'user_status',
+    'user_relationship_details',
+    'user_location',
+    'publish_actions',
+    'user_likes',
+    'user_location',
+    'user_subscriptions',
+    'publish_stream',
+    'read_stream',
+    'read_friendlists',
+    'user_interests',
+    'user_website',
+    'user_birthday',
+    'user_hometown',
+    'user_checkins',
+    'user_relationships',
+    'user_religion_politics',
+]
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'es_LA'}
+SOCIAL_AUTH_FACEBOOK_EXTRA_DATA = [
+    ('id', 'id'),
+    ('about', 'about'),
+    ('address', 'address'),
+    ('bio', 'bio'),
+    ('birthday', 'birthday'),
+    ('devices', 'devices'),
+    ('email', 'email'),
+    ('favorite_athletes', 'favorite_athletes'),
+    ('favorite_teams', 'favorite_teams'),
+    ('first_name', 'first_name'),
+    ('last_name', 'last_name'),
+    ('gender', 'gender'),
+    ('hometown', 'hometown'),
+    ('inspirational_people', 'inspirational_people'),
+    ('interested_in', 'interested_in'),
+    ('languages', 'languages'),
+    ('political', 'political'),
+    ('relationship_status', 'relationship_status'),
+    ('location', 'location'),
+    ('work', 'work'),
+    ('movies', 'movies'),
+    ('music', 'music'),
+    ('interests', 'interests'),
+    ('checkins', 'checkins')
+]
 
-FACEBOOK_EXTENDED_PERMISSIONS = ['email', 'user_about_me', 'user_location', 'user_photos', 'publish_actions']
-
-FACEBOOK_PROFILE_EXTRA_PARAMS = {'locale': 'es_LA'}
-
-TWITTER_EXTRA_DATA = [('profile_image_url', 'profile_image_url'),('screen_name', 'screen_name')]
+SOCIAL_AUTH_TWITTER_EXTRA_DATA = [('profile_image_url', 'profile_image_url'),('screen_name', 'screen_name')]
 
 
 EMAIL_HOST = 'smtp.gmail.com'

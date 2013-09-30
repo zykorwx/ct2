@@ -53,14 +53,18 @@ def get_image_path(perfil, filename):
 
 
 class Perfil(models.Model):
-	user = models.ForeignKey(User, unique=True)
-	avatar = models.ImageField(upload_to=get_image_path, verbose_name='avatar')
+	user = models.OneToOneField(User, primary_key=True)
+	fecha_nacimiento = models.CharField(max_length=15, verbose_name=(u'fecha_nacimiento'), blank=True, null=True)
+	sexo = models.CharField(max_length=10, verbose_name=(u'Sexo'), blank=True, null=True)
+	ubicacion = models.CharField(max_length=70, verbose_name=(u'Ubicacion'), blank=True, null=True)
+	uid_facebook = models.CharField(max_length=20, verbose_name=(u'uid_facebook'), blank=True, null=True)
+	json_facebook = models.TextField(blank=True, null=True, verbose_name=(u'Facebook'))
 	class Meta:
 		verbose_name = _('Perfil')
 		verbose_name_plural = _('Perfiles')
 		app_label= 'usuarios'
 	def __unicode__(self):
-		return '%s' %(self.tipo_user_tarjera)
+		return '%s %s' %(self.user.first_name, self.user.last_name)
 
 
 

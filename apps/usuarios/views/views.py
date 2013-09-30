@@ -8,9 +8,12 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User, Group
+from django.db import DatabaseError, IntegrityError
+from apps.usuarios.models import Perfil
 from social_auth.models import UserSocialAuth
 from apps.empresas.models import Empresa, Encargados_empresas,Categoria
 from apps.usuarios.decorators import login_empresa_required
+import json
 
 ### Formulario para actualizar los datos
 from apps.empresas.forms.datosGeneralesForm import DatosGeneralesEmpresaForm
@@ -31,6 +34,7 @@ def  index(request):
 	if request.user.is_authenticated():
 		if request.user.social_auth.filter().count() > 0:
 			verficaGrupo(request.user, 'consumidor')
+			verificaPerfil(request.user)
 			if request.user.social_auth.filter(provider='twitter').count() > 0:
 				getImgTwitter = request.user.social_auth.get(provider='twitter').extra_data['profile_image_url']
 				getNameTwitter = request.user.social_auth.get(provider='twitter').extra_data['screen_name']
@@ -53,9 +57,12 @@ def  index(request):
 			 'infoFacebook': getInfoFaceBook,
 			 'encargado': encargado},
 			 context_instance=RequestContext(request))
+		if request.user.groups.filter(id=1).count() > 0:
+			return render_to_response('usuarios/index.html',  context_instance=RequestContext(request))
 		return HttpResponseRedirect('/empresa')
 	else:
 		return render_to_response('usuarios/index.html',  context_instance=RequestContext(request))
+
 
 # Si no existe el grupo lo creamos y agregamos al usuario, si existe solo agregamos al usuario
 def verficaGrupo(usuario, nombre):
@@ -68,10 +75,45 @@ def verficaGrupo(usuario, nombre):
 		usuario.groups.add(aux[0])
 
 
+# Verificamos si ya se creo el perfil del usuario de los datos de facebook
+# Si es que no, obtenemos los datos desde el json de social auth y los metemos al perfil
+# Si ya existe pero los datos no son iguales a los que tenemos en el social auth los actualizamos
+# Esto quiere decir si el usuario cambia algo en el facebook tambien lo cambiara en su perfil de nuestra pagina
+def verificaPerfil(usuario):
+	try:
+		perfil = Perfil.objects.get(pk=usuario)
+		datosFace = usuario.social_auth.get(provider='facebook').extra_data
+		if str(perfil.json_facebook) != str(datosFace):
+			return guardaPerfil(usuario)
+		return True
+	except DatabaseError as e:
+		return False					
+	except IntegrityError as e:
+		return False	
+	except Perfil.DoesNotExist:
+		return guardaPerfil(usuario) 
+
+# guarda el perfil de usuario
+def guardaPerfil(usuario):
+	try:
+		datosFace = usuario.social_auth.get(provider='facebook').extra_data
+		if (datosFace['birthday'] != None) and (datosFace['gender'] != None) and (datosFace['hometown'] != None) and (datosFace['id'] != None):
+			perfil = Perfil(usuario.id, datosFace['birthday'], datosFace['gender'], datosFace['hometown']['name'], datosFace['id'], datosFace)
+			perfil.save()
+			return True
+	except DatabaseError as e:
+		return False					
+	except IntegrityError as e:
+		return False
+	except usuario.social_auth.DoesNotExist:
+		return False
+
+
 ### Se debe verificar el seguimiento, pero eso ya cuando se vaya creadno el
 ### sistema final.
 @login_empresa_required(login_url='/')
 def logeoEmpresa(request):
+	print "llego aqui?"
 	verificado = False
 	empresa = Empresa.objects.filter(empresa_user = request.user.id)
 	item_empresa = get_object_or_404(Empresa, pk=1)

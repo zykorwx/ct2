@@ -11,7 +11,8 @@ from views import verficaGrupo
 
 
 
-# Este es para registrar una nueva empresa
+# Este es para registrar una nueva usuario de forma manual
+# Por default se encuentra desactivada esta opcion
 def nuevoConsumidorView(request):
 	if request.user.is_authenticated() and not request.user.is_staff:
 		return redirect('/')

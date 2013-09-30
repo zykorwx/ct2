@@ -28,14 +28,16 @@
                             <div id='opciones_sesion'></div>
                             {% if  nameTwitter != None and nameTwitter != '' %}
                                 <div id="desconectar">
-                                    <a href='{% url "socialauth_disconnect_individual" "twitter" idTwitter %}'>Desconectar de twitter </a>
+                                    <form method="post" action='{% url "social:disconnect_individual" "twitter" idTwitter %}'>{% csrf_token %}
+                                        <button type="submit" >Desvincular twitter</button>
+                                    </form>
                                 </div>
                             {% elif infoFacebook == None %}
                                 Inicio sesion <br>            
-                                <a href='{% url "socialauth_begin" "facebook" %}'>facebook</a>
+                                <a href='{% url "social:begin" "facebook" %}'>facebook</a>
                                 <a href='/registroEmpresa'>Nueva empresa</a>
                                     <!-- Esta seccion se elimina  
-                                    <a href='{% url "socialauth_begin" "twitter" %}'>twitter</a>
+                                    <a href='{% url "social:begin" "twitter" %}'>twitter</a>
                                     <a href='/usuario/registroUsuario'>Nuevo Usuario</a>
                                     -->
                                 <form method="post" action="/login/">{% csrf_token %}
@@ -111,7 +113,7 @@
                     $( "#avatar" ).append(html);
                     $( "#nom_user" ).append(nombre +'</br>');
                 });
-                var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "socialauth_begin" "twitter" %}">Conectar con twitter</a>'
+                var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "social:begin" "twitter" %}">Conectar con twitter</a>'
                 $( "#opciones_sesion" ).html(html_opciones);
             }
             //Descomentar para mostrar solo cuando se loegean con twitter
@@ -121,7 +123,7 @@
                 html1 = '<img src="'+imgTwitter+'" style="height:100%;">'
                 $( "#avatar" ).append(html1);
                 $( "#nom_user" ).append(nameTwitter +'</br>');
-                var html_opciones = '<h4>Eres: {{ user.groups.all.0 }}</h4><a  href="/usuario/cerrarSesion">Cerrar sesion</a>vincula tu cuenta con <a href="{% url "socialauth_begin" "facebook" %}">facebook</a>';
+                
 
                 $( "#opciones_sesion" ).html(html_opciones);
             }**/
