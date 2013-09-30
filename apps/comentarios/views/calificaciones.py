@@ -3,6 +3,7 @@
 """ Importar modelos a utilizar """
 
 from apps.empresas.models.empresa import Empresa, Categoria
+from apps.promociones.models.promocion import Promocion
 from apps.comentarios.models.preguntas import Preguntas_promocion,Calificacion_promocion
 
 """ Importando las librerias python a utilizar """
@@ -35,4 +36,28 @@ def buscaPreguntas(data = None):
 					resultado = {"error":"CO-0000549"}
 			except Exception, e:
 				raise
+	return json.dumps(resultado)
+
+
+
+def agregarCalificacion(data= None):
+	us = None
+	promo = None
+	if data:
+		data =  json.loads(data)
+		if data.has_key("user") and data.has_key("promocion"):
+			us =  data["user"]
+			promo = data["promocion"]
+			try:
+				promo = Promocion.objects.get(pk=promo)
+			except Promocion.DoesNotExist:
+				resultado = {"error":"CO-0000552"}
+			except Exception, e:
+				raise
+
+	else:
+		resultado = {"error":"CO-0000551"}
+
+	if us and promo:
+
 	return json.dumps(resultado)
