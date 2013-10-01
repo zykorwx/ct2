@@ -9,6 +9,7 @@ from apps.comentarios.models.preguntas import Preguntas_promocion,Calificacion_p
 """ Importando las librerias python a utilizar """
 import json
 from django.core import serializers 
+from django.db import IntegrityError, transaction
 
 def buscaPreguntas(data = None):
 	data = json.loads(data)
@@ -38,26 +39,45 @@ def buscaPreguntas(data = None):
 				raise
 	return json.dumps(resultado)
 
-
-
+#El sigiente es el json (ejemplo que voy a recibir)
+#data={"user":user,"promocion":222222,"preguntas":{1222:55,1222:5,1244:55,1:4,2:3,3:4,4:4}}
 def agregarCalificacion(data= None):
 	us = None
 	promo = None
+	resultado = {}
 	if data:
 		data =  json.loads(data)
 		if data.has_key("user") and data.has_key("promocion"):
 			us =  data["user"]
 			promo = data["promocion"]
-			try:
-				promo = Promocion.objects.get(pk=promo)
-			except Promocion.DoesNotExist:
-				resultado = {"error":"CO-0000552"}
-			except Exception, e:
-				raise
-
+			preguntas = data["preguntas"]
+			agrega = addCalenBd(us,promo,preguntas)
+			if agregar:
+				resultado = {"transaccion":"exitosa"}
+			else:
+				resultado = {"transaccion":"fallida"}
 	else:
 		resultado = {"error":"CO-0000551"}
 
-	if us and promo:
 
 	return json.dumps(resultado)
+
+
+#@transaction.atomic
+def addCalenBd(user=None,promo=None,preguntas=None):
+	realizado = False
+	if user and promo and preguntas:
+		for x in preguntas.keys():
+			try:
+				Calificacion_promocion.objects.create(
+						promocion_id=promo,
+						pregunta_id=x,
+						usuario_id=user,
+						calificacion=preguntas[x])
+				realizado = True
+			except Exception, e:
+				realizado =  False
+				raise		
+	#do_stuff()
+	return realizado
+
