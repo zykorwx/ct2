@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="angular-django-app">
+<head>
+  <title>Probando comentarios</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+  <script src='{{STATIC_URL}}js/invitaciones-app/controllers/mainController.js'></script>
+</head>
+<body>
+    <div ng-app="App" ng-controller="probandoAngularController as demo">
+       <input ng-model="name">
+
+        <h1>#{demo.msg} tambien concatenando cosas : #{name}</h1>
+    </div>
+
+<div ng-controller="MyCtrl">
+      Hello #{name1}!
+      <button ng-click="action()">
+        OK
+      </button>
+</div>
+<div>
+  <a href="#"  onclick="compartir()" return true;>
+  Share on Facebook
+</a>
+
+</div>
+
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script type="text/javascript">
+  function compartir(){
+  var uri = "http://bsmoral.com"
+  var aux = encodeURIComponent(uri);
+  console.log(aux);
+  window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+aux, 
+      'facebook-share-dialog', 
+      'width=626,height=436'); 
+    }
+  </script>
+</body>
+</html>

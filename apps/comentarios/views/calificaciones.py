@@ -54,10 +54,7 @@ def agregarCalificacion(data= None):
 				resultado = {"error":"CO-0000552"}
 			except Exception, e:
 				raise
-
 	else:
 		resultado = {"error":"CO-0000551"}
-
 	if us and promo:
-
-	return json.dumps(resultado)
+		return json.dumps(resultado)
